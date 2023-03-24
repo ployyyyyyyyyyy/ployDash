@@ -289,8 +289,8 @@
 
 <script >
 import axiosInstance from '../utils/axios.instance';
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css"; 
 import { ref } from 'vue';
 import { Bar } from "vue-chartjs";
 import {
