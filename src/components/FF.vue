@@ -347,7 +347,8 @@ export default {
     dialog1: false,
     dialog2: false,
     dialog3: false,
-    bottleNeck: '',
+    bottleNeck: 'NO DATA',
+    group: 'NO DATA',
     lineId: 1,
     station: [],
     stationData: [],
@@ -399,6 +400,7 @@ export default {
       this.time = dashboard.workingTime.time;
       this.min = dashboard.workingTime.min;
       this.bottleNeck = dashboard.bottleNeck;
+      this.group = dashboard.group;
       this.downtimeDefect = dashboard.downtimeDefect;
       this.id = dashboard.downtimeDefect.id;
       this.details = dashboard.downtimeDefect.details;
@@ -549,6 +551,7 @@ export default {
       this.time = dashboard.workingTime.time;
       this.min = dashboard.workingTime.min;
       this.bottleNeck = dashboard.bottleNeck;
+      this.group = dashboard.group
       this.downtimeDefect = dashboard.downtimeDefect;
       this.id = dashboard.downtimeDefect.id;
       this.details = dashboard.downtimeDefect.details;

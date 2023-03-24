@@ -90,6 +90,7 @@
               <v-card width="800px" height="800px">
                 <v-card-text-1>
                   <div class="content-downtime-item">
+                    <div class="pa-8 " ><h3>Downtime at bottle neck </h3></div>
                     <v-table fixed-header height="630px">
                       <thead>
                         <tr>
@@ -108,11 +109,11 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(downtimeDefect, index) in downtimeDefect " :key="index">
-                          <td>{{ downtimeDefect.id }}</td>
-                          <td>{{ downtimeDefect.details }}</td>
-                          <td>{{ downtimeDefect.station }}</td>
-                          <td>{{ downtimeDefect.downtime }}</td>
+                        <tr v-for="(bottleneck, index) in bottleneck " :key="index">
+                          <td>{{ bottleneck.id }}</td>
+                          <td>{{ bottleneck.details }}</td>
+                          <td>{{ bottleneck.station }}</td>
+                          <td>{{ bottleneck.downtime }}</td>
                         </tr>
                       </tbody>
                     </v-table>
@@ -142,7 +143,7 @@
             <v-card width="800px" height="800px">
               <v-card-text-2>
                 <div class="content-downtime-item">
-                  <v-table fixed-header height="630px">
+                  <v-table fixed-header height="630px" class="pa-10 ">
                     <thead>
                       <tr>
                         <th>
@@ -160,11 +161,11 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(downtimeDefect, index) in downtimeDefect " :key="index">
-                        <td>{{ downtimeDefect.id }}</td>
-                        <td>{{ downtimeDefect.details }}</td>
-                        <td>{{ downtimeDefect.station }}</td>
-                        <td>{{ downtimeDefect.downtime }}</td>
+                      <tr v-for="(downtimenotBT, index) in downtimenotBT " :key="index">
+                        <td>{{ downtimenotBT.id }}</td>
+                        <td>{{ downtimenotBT.details }}</td>
+                        <td>{{ downtimenotBT.station }}</td>
+                        <td>{{ downtimenotBT.downtime }}</td>
                       </tr>
                     </tbody>
                   </v-table>
@@ -192,7 +193,7 @@
             <v-card width="800px" height="800px">
               <v-card-text-3>
                 <div class="content-failureDefect-item">
-                  <v-table fixed-header height="630px">
+                  <v-table fixed-header height="630px" class="pa-10 ">
                     <thead>
                       <tr>
                         <th>
@@ -264,14 +265,14 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <chart-DT :chart-data="chartData1" :chart-options="chartOptions" />
+          <Bar v-if="loaded" :data="chartData1" width="450" height="340" class="pa-4 "/>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <chart-DF :chart-data="chartData2" :chart-options="chartOptions" />
+          <Bar v-if="loaded" :data="chartData2" width="450" height="340" class="pa-4 "/>
         </div>
       </div>
 
@@ -285,12 +286,29 @@ import axiosInstance from '../utils/axios.instance';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { ref, onMounted } from 'vue';
-
+import { Bar } from "vue-chartjs";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
 
 
 export default {
   name: 'FF',
-  components: { Datepicker },
+  components: { Datepicker, Bar },
 
   data: () => ({
     interval: {},
@@ -305,7 +323,8 @@ export default {
     min: '-',
     bottleNeck: 'NO DATA',
     lineId: 1,
-    shift: '',
+    station: [],
+    stationData: [],
     dialog1: false,
     dialog2: false,
     dialog3: false,
@@ -320,6 +339,29 @@ export default {
       return `${daystart}/${monthstart}/${yearstart} - ${dayend}/${monthend}/${yearend}`;
     },
     shift: 'DAY',
+    bottleneck: null,
+    downtimeDefect: [],
+    sumdowntimeDefect: null,
+
+    scrapDefects: [],
+    sumScrapDefects: null,
+    sumScrapIns1: null,
+    sumScrapIns2: null,
+    sumScrapIns3: null,
+
+    repairDefects: [],
+    sumRepairDefects: null,
+    sumrepairIns1: null,
+    sumrepairIns2: null,
+    sumrepairIns3: null,
+
+    reworkDefects: [],
+    sumreworkDefects: null,
+    sumreworkIns1: null,
+    sumreworkIns2: null,
+    sumreworkIns3: null,
+    
+    loaded: false,
   }),
 
   async mounted() {
@@ -336,63 +378,16 @@ export default {
       endDate: new Date(),
       shift: "DAY"
     });
-    this.target = dashboard.target;
-    this.plan = dashboard.plan;
-    this.actual = dashboard.actual;
-    this.bottleNeck = dashboard.bottleNeck;
-    this.OEE = dashboard.oee;
-    this.availability = dashboard.availability;
-    this.performance = dashboard.performance;
-    this.quality = dashboard.quality;
-    this.workingTime = dashboard.workingTim;
-    this.time = dashboard.workingTime.time;
-    this.min = dashboard.workingTime.min;
-    this.bottleNeck = dashboard.bottleNeck;
-    this.downtimeDefect = dashboard.downtimeDefect;
-    this.id = dashboard.downtimeDefect.id;
-    this.details = dashboard.downtimeDefect.details;
-    this.station = dashboard.downtimeDefect.station;
-    this.downtime = dashboard.downtimeDefect.downtime;
-    this.failureDefect = dashboard.failureDefect;
-    this.type = dashboard.failureDefect.type;
-    this.details = dashboard.failureDefect.details;
-    this.station = dashboard.failureDefect.station;
-    this.sum = dashboard.failureDefect.sum;
-    console.log("dashboard", dashboard);
-    console.log("dashboard", dashboard.actual);
-    console.log("dashboard", dashboard.OEE);
-    console.log("availability", dashboard.availability);
-    console.log("dashboaperformancerd", dashboard.performance);
-    console.log("quality", dashboard.quality);
-    // console.log("dashboard", dashboardbar.bar);
-    // console.log("dashboard", dashboardbar.min);
-    // console.log("dashboard", dashboardbar.time);
-    console.log("workingTime", dashboard.workingTime);
-    console.log("workingTime.min", dashboard.workingTime.min);
-    console.log("bottleNeck", dashboard.bottleNeck);
+    this.loaded = false;
+    try {
 
-  },
-  methods: {
-
-    async update() {
-
-      const dashboard = await axiosInstance.post('/dashboard/week', {
-        lineId: this.lineId,
-        startDate: this.date[0],
-        endDate: this.date[1],
-        shift: this.shift
-      })
       this.target = dashboard.target;
       this.plan = dashboard.plan;
       this.actual = dashboard.actual;
-      this.group = dashboard.group;
-      //    this.downtimeDefect = dashboard.downtimeDefect;
-      this.station = dashboard.downtimeDefect.station;
       this.OEE = dashboard.oee;
       this.availability = dashboard.availability;
       this.performance = dashboard.performance;
       this.quality = dashboard.quality;
-      this.workingTime = dashboard.workingTim;
       this.time = dashboard.workingTime.time;
       this.min = dashboard.workingTime.min;
       this.bottleNeck = dashboard.bottleNeck;
@@ -406,13 +401,313 @@ export default {
       this.details = dashboard.failureDefect.details;
       this.station = dashboard.failureDefect.station;
       this.sum = dashboard.failureDefect.sum;
+      //ตารางAvailability--------------------------------------------------
+      this.bottleneck = dashboard.downtimeDefect.filter(
+        (bottleneck) => bottleneck.station === "OP06"
+      );
+      //ตารางPerformance----------------------------------------------------
+      this.downtimenotBT = dashboard.downtimeDefect.filter(
+        (downtimenotBT) => downtimenotBT.station !== "OP06"
+      );
+      // DOWNTIME----------------------------------------------------------
+      const s = await axiosInstance.get(`/station/line/1`); 
+      // เอาข้อมูลมาเก็บ
+      this.station = s;
+      console.log(this.station);
+      //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
+      this.stationData = Array(this.station.length).fill(0);
+      console.log(this.stationData);
 
-      console.log("dashboard", dashboard);
-      const endDate = new Date();
-      const startDate = new Date(new Date().setDate(endDate.getDate() - 6));
-      this.date = [startDate, endDate];
+      for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
+        console.log(dashboard.downtimeDefect[i]);
+        for (let j = 0; j < this.station.length; j++) {
+          if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
+            this.stationData[j] =
+              this.stationData[j] + dashboard.downtimeDefect[i].downtime;
+            console.log(this.stationData);
+          }
+        }
+      }
+      // SCRAP----------------------------------------------------------
+      this.scrapDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "SCRAP"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
+          this.sumScrapDefects =
+            this.sumScrapDefects + this.scrapDefects[i].sum;
+          this.countScrapDefects = this.countScrapDefects + 1;
+          if (this.scrapDefects[i].station == "Inspection 1") {
+            this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
+            // console.log("this.sumScrapIns1", this.sumScrapIns1);
+          }
+          if (this.scrapDefects[i].station == "Inspection 2") {
+            this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
+            // console.log("this.sumScrapIns2", this.sumScrapIns2);
+          }
+          if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
+            // console.log("this.sumScrapIns3", this.sumScrapIns3);
+          }
+        }
+      }
+      
+      // REPAIR----------------------------------------------------------
+      this.repairDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "REPAIR"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.repairDefects[i] && this.repairDefects[i].sum) {
+          this.sumrepairDefects =
+            this.sumrepairDefects + this.repairDefects[i].sum;
+          this.countrepairDefects = this.countrepairDefects + 1;
+          if (this.repairDefects[i].station == "Inspection 1") {
+            this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns1", this.sumrepairIns1);
+          }
+          if (this.repairDefects[i].station == "Inspection 2") {
+            this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns2", this.sumrepairIns2);
+          }
+          if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns3", this.sumrepairIns3);
+          }
+        }
+      }
+
+      // REWORK----------------------------------------------------------
+      this.reworkDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "REWORK"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+          this.sumreworkDefects =
+            this.sumreworkDefects + this.reworkDefects[i].sum;
+          this.countreworkDefects = this.countreworkDefects + 1;
+          if (this.reworkDefects[i].station == "Inspection 1") {
+            this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns1", this.sumreworkIns1);
+          }
+          if (this.reworkDefects[i].station == "Inspection 2") {
+            this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns2", this.sumreworkIns2);
+          }
+          if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns3", this.sumreworkIns3);
+          }
+        }
+      }
+      this.loaded = true;
+    } catch (e) {
+      console.error(e);
+    }
+
+    console.log("dashboard", dashboard);
+    console.log("actual", dashboard.actual);
+    console.log("OEE", dashboard.OEE);
+    console.log("availability", dashboard.availability);
+    console.log("dashboaperformancerd", dashboard.performance);
+    console.log("quality", dashboard.quality);
+    // console.log("dashboard", dashboardbar.bar);
+    // console.log("dashboard", dashboardbar.min);
+    // console.log("dashboard", dashboardbar.time);
+    console.log("workingTime", dashboard.workingTime);
+    console.log("workingTime.min", dashboard.workingTime.min);
+    console.log("bottleNeck", dashboard.bottleNeck);
+    console.log("plan", dashboard.plan);
+
+  },
+  methods: {
+
+    async update() {
+
+      const dashboard = await axiosInstance.post('/dashboard/week', {
+        lineId: this.lineId,
+        startDate: this.date[0],
+        endDate: this.date[1],
+        shift: this.shift
+      })
+      this.loaded = false;
+    try {
+
+      this.target = dashboard.target;
+      this.plan = dashboard.plan;
+      this.actual = dashboard.actual;
+      this.OEE = dashboard.oee;
+      this.availability = dashboard.availability;
+      this.performance = dashboard.performance;
+      this.quality = dashboard.quality;
+      this.time = dashboard.workingTime.time;
+      this.min = dashboard.workingTime.min;
+      this.bottleNeck = dashboard.bottleNeck;
+      this.downtimeDefect = dashboard.downtimeDefect;
+      this.id = dashboard.downtimeDefect.id;
+      this.details = dashboard.downtimeDefect.details;
+      this.station = dashboard.downtimeDefect.station;
+      this.downtime = dashboard.downtimeDefect.downtime;
+      this.failureDefect = dashboard.failureDefect;
+      this.type = dashboard.failureDefect.type;
+      this.details = dashboard.failureDefect.details;
+      this.station = dashboard.failureDefect.station;
+      this.sum = dashboard.failureDefect.sum;
+      //ตารางAvailability--------------------------------------------------
+      this.bottleneck = dashboard.downtimeDefect.filter(
+        (bottleneck) => bottleneck.station === "OP06"
+      );
+      //ตารางPerformance----------------------------------------------------
+      this.downtimenotBT = dashboard.downtimeDefect.filter(
+        (downtimenotBT) => downtimenotBT.station !== "OP06"
+      );
+      // DOWNTIME----------------------------------------------------------
+      const s = await axiosInstance.get(`/station/line/1`); 
+      // เอาข้อมูลมาเก็บ
+      this.station = s;
+      console.log(this.station);
+      //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
+      this.stationData = Array(this.station.length).fill(0);
+      console.log(this.stationData);
+
+      for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
+        console.log(dashboard.downtimeDefect[i]);
+        for (let j = 0; j < this.station.length; j++) {
+          if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
+            this.stationData[j] =
+              this.stationData[j] + dashboard.downtimeDefect[i].downtime;
+            console.log(this.stationData);
+          }
+        }
+      }
+      // SCRAP----------------------------------------------------------
+      this.scrapDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "SCRAP"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
+          this.sumScrapDefects =
+            this.sumScrapDefects + this.scrapDefects[i].sum;
+          this.countScrapDefects = this.countScrapDefects + 1;
+          if (this.scrapDefects[i].station == "Inspection 1") {
+            this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
+            // console.log("this.sumScrapIns1", this.sumScrapIns1);
+          }
+          if (this.scrapDefects[i].station == "Inspection 2") {
+            this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
+            // console.log("this.sumScrapIns2", this.sumScrapIns2);
+          }
+          if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
+            // console.log("this.sumScrapIns3", this.sumScrapIns3);
+          }
+        }
+      }
+      
+      // REPAIR----------------------------------------------------------
+      this.repairDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "REPAIR"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.repairDefects[i] && this.repairDefects[i].sum) {
+          this.sumrepairDefects =
+            this.sumrepairDefects + this.repairDefects[i].sum;
+          this.countrepairDefects = this.countrepairDefects + 1;
+          if (this.repairDefects[i].station == "Inspection 1") {
+            this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns1", this.sumrepairIns1);
+          }
+          if (this.repairDefects[i].station == "Inspection 2") {
+            this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns2", this.sumrepairIns2);
+          }
+          if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns3", this.sumrepairIns3);
+          }
+        }
+      }
+
+      // REWORK----------------------------------------------------------
+      this.reworkDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "REWORK"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+          this.sumreworkDefects =
+            this.sumreworkDefects + this.reworkDefects[i].sum;
+          this.countreworkDefects = this.countreworkDefects + 1;
+          if (this.reworkDefects[i].station == "Inspection 1") {
+            this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns1", this.sumreworkIns1);
+          }
+          if (this.reworkDefects[i].station == "Inspection 2") {
+            this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns2", this.sumreworkIns2);
+          }
+          if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns3", this.sumreworkIns3);
+          }
+        }
+      }
+      this.loaded = true;
+    } catch (e) {
+      console.error(e);
+    }
+
+    console.log("dashboard", dashboard);
+    console.log("actual", dashboard.actual);
+    console.log("OEE", dashboard.OEE);
+    console.log("availability", dashboard.availability);
+    console.log("dashboaperformancerd", dashboard.performance);
+    console.log("quality", dashboard.quality);
+    // console.log("dashboard", dashboardbar.bar);
+    // console.log("dashboard", dashboardbar.min);
+    // console.log("dashboard", dashboardbar.time);
+    console.log("workingTime", dashboard.workingTime);
+    console.log("workingTime.min", dashboard.workingTime.min);
+    console.log("bottleNeck", dashboard.bottleNeck);
+    console.log("plan", dashboard.plan);
+
     },
 
+
+  },
+  computed: {
+    chartData1() {
+      return {
+        labels: this.station.map((n) => `${n.stationId}`),
+        datasets: [
+          {
+            label: "Downtime",
+            backgroundColor: "#00148E",
+            data: this.stationData,
+          },
+        ],
+      };
+  },
+    chartData2() {
+      return {
+        labels: ["Inspection 1", "Inspection 2", "Q-Gate Inspection 3"],
+        datasets: [
+          {
+            label: "SCRAP",
+            backgroundColor: "#FF0000",
+            data: [this.sumScrapIns1, this.sumScrapIns2, this.sumScrapIns3],
+          },
+          {
+            label: "REPAIR",
+            backgroundColor: "#FF7F00",
+            data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
+          },
+          {
+            label: "REWORK",
+            backgroundColor: "#FFFF00",
+            data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+          },
+        ],
+      };
+    },
   },
 }
 
@@ -765,7 +1060,8 @@ a h3 {
 }
 
 .v-table {
-  padding: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
 
 }
 
