@@ -270,14 +270,14 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar v-if="loaded" :data="chartData1" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 "/>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar v-if="loaded" :data="chartData2" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData2" width="450" height="340" class="pa-4 "/>
           
         </div>
       </div>
@@ -324,13 +324,10 @@ export default {
 
       return `${day}/${month}/${year}`;
     }
-
     return {
       date,
       format,
     }
-
-
   },
 
   data: () => ({
@@ -339,7 +336,7 @@ export default {
     performance: 0,
     quality: 0,
     OEE: 0,
-    target: 0,
+    target: 0, 
     plan: 0,
     actual: 0,
     time: '-',
@@ -389,7 +386,6 @@ export default {
     });
     this.loaded = false;
     try {
-
       this.target = dashboard.target;
       this.plan = dashboard.plan;
       this.actual = dashboard.actual;
@@ -562,7 +558,6 @@ export default {
       this.details = dashboard.failureDefect.details;
       this.station = dashboard.failureDefect.station;
       this.sum = dashboard.failureDefect.sum;
-      //dftrjr
       //ตารางAvailability--------------------------------------------------
       this.bottleneck = dashboard.downtimeDefect.filter(
         (bottleneck) => bottleneck.station === "OP06"

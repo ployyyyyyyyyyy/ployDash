@@ -69,6 +69,7 @@ export default {
         email: this.email,
         password: this.password,
       });
+      window.location.reload();
     },
     required(v) {
       return !!v || "Field is required";
