@@ -579,15 +579,17 @@ export default {
           }
         }
         // SCRAP----------------------------------------------------------
-        this.stationData = Array(this.this.scrapDefects).fill(0);
-        console.log(this.stationData);
         this.scrapDefects = dashboard.failureDefect.filter(
           (defect) => defect.type === "SCRAP"
         );
-        this.sumScrapDefects = 0
-        this.sumScrapIns1 = 0
-        this.sumScrapIns2 = 0
-        this.sumScrapIns3 = 0
+        //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
+        this.sumScrapIns1 = this.scrapDefects.fill();
+        console.log(this.sumScrapDefects);
+        this.sumScrapIns2 = Array(this.sumScrapDefects).fill(0);
+        console.log(this.sumScrapDefects);
+        this.sumScrapIns3 = Array(this.sumScrapDefects).fill(0);
+        console.log(this.sumScrapDefects);
+
         for (let i = 0; i < dashboard.failureTotal; i++) {
           if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
             this.sumScrapDefects =
@@ -801,18 +803,18 @@ ul.BACK li a h2:hover {
   text-align: center;
   background: white;
   color: black;
-  padding: 10px 28px;
+  padding: 10px 23px;
 }
 
 .WT-item {
   background-color: #292929;
   color: white;
-  width: 270px;
+  width: 271px;
   height: 197px;
   border-radius: 15px;
   justify-items: center;
   margin-top: 127%;
-  transform: translatex(589%);
+  transform: translatex(587%);
   font-family: 'Sarabun', sans-serif;
   font-size: 20;
 }
