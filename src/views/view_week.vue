@@ -1,18 +1,19 @@
 <template>
-    <FFmonth />
+    <week />
   </template>
   
   <script>
   import { defineComponent } from 'vue';
   
   // Components
-  import FFmonth from '../components/FFmonth.vue';
+  import week from '../components/week.vue';
   
   export default defineComponent({
-    name: 'FFmonth1',
+    name: 'week1',
   
     components: {
-      FFmonth,
+      week,
     },
   });
   </script>
+  

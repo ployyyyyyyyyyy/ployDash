@@ -1,18 +1,18 @@
 <template>
-  <FF />
+  <date />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 
 // Components
-import FF from '../components/FF.vue';
+import date from '../components/date.vue';
 
 export default defineComponent({
-  name: 'FF1',
+  name: 'date1',
 
   components: {
-    FF,
+    date,
   },
 });
 </script>

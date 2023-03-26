@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import view_FF from '../views/view_FF.vue'
 import view_Login from '../views/view_Login.vue'
 import view_homepage from '../views/view_homepage.vue'
 import view_register from '../views/view_register.vue'
-import view_FFweek from '../views/view_FFweek.vue'
-import view_FFmonth from '../views/view_FFmonth.vue'
+import view_date from '../views/view_date.vue'
+import view_week from '../views/view_week.vue'
+import view_month from '../views/view_month.vue'
 
 
 
@@ -17,19 +17,19 @@ const router = createRouter({
       component: view_Login
     },
     {
-      path: '/FF',
-      name: 'FF',
-      component: view_FF
+      path: '/date/:type',
+      name: 'date',
+      component: view_date
     },
     {
-      path: '/FFweek',
-      name: 'FFweek',
-      component: view_FFweek
+      path: '/week/:type',
+      name: 'week',
+      component: view_week
     },
     {
-      path: '/FFmonth',
-      name: 'FFmonth',
-      component: view_FFmonth
+      path: '/month/:type',
+      name: 'month',
+      component: view_month
     },
     {
       path: '/Login',

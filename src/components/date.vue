@@ -1,8 +1,14 @@
 <template>
   <div class="container">
     <div class="manu">
-      <header>
-        <h1>OEE : Fabrication of F Frame</h1>
+      <header v-if="type == '1'">
+        <h1 >OEE : Fabrication of F Frame</h1>
+      </header>
+      <header v-if="type == '2'">
+        <h1 >OEE : Fabrication of S Frame</h1>
+      </header>
+      <header v-if="type == '3'">
+        <h1 >OEE : Powder Coat Painting</h1>
       </header>
       <div class="BACK-item">
         <ul class="BACK">
@@ -33,16 +39,16 @@
       </div>
       <div class="DATA-item">
         <ul class="data-item">
-          <li><router-link to="/FF">
-              <h2 class="mb-6">DATE</h2>
-            </router-link></li>
-          <li><router-link to="/FFweek">
-              <h2>WEEK</h2>
-            </router-link></li>
-          <h2 class="mt-6">MONTH</h2>
+          <h2>DATE</h2>
           <h3>
-            <Datepicker v-model="month" month-picker @update:modelValue="update" />
+            <Datepicker v-model="date" :format="format" :enableTimePicker="false" @update:modelValue="update" />
           </h3>
+          <li><router-link :to="/week/+ gettype()">
+              <h2 class="mb-6">WEEK</h2>
+            </router-link></li>
+          <li><router-link :to="/month/+ gettype()">
+              <h2>MONTH</h2>
+            </router-link></li>
         </ul>
       </div>
       <div class="Logout-item">
@@ -68,7 +74,7 @@
         <div class="text-center">
           <v-progress-circular :rotate="360" :size="320" :width="60" :model-value="OEE"
             :color="this.OEE < 75 ? '#F9370C' : '#4CAF50'">
-            <strong>{{ Math.ceil(OEE) }}%</strong>
+            <strong>{{ OEE }}%</strong>
           </v-progress-circular>
 
         </div>
@@ -88,12 +94,12 @@
                 </v-btn>
               </template>
               <v-card width="800px" height="800px">
-                <v-card-text-1>
+                <v-card-text>
                   <div class="content-downtime-item">
-                    <div class="pa-8 ">
+                    <div class="mt-5" v-if="type == '1' || type == '2'">
                       <h3>Downtime at bottle neck </h3>
                     </div>
-                    <v-table fixed-header height="630px">
+                    <v-table fixed-header height="630px" class="pa-10 ">
                       <thead>
                         <tr>
                           <th>
@@ -120,7 +126,7 @@
                       </tbody>
                     </v-table>
                   </div>
-                </v-card-text-1>
+                </v-card-text>
                 <v-card-actions>
                   <v-btn color="primary" block @click="dialog1 = false">Close</v-btn>
                 </v-card-actions>
@@ -143,7 +149,7 @@
               </v-btn>
             </template>
             <v-card width="800px" height="800px">
-              <v-card-text-2>
+              <v-card-text>
                 <div class="content-downtime-item">
                   <v-table fixed-header height="630px" class="pa-10 ">
                     <thead>
@@ -172,7 +178,7 @@
                     </tbody>
                   </v-table>
                 </div>
-              </v-card-text-2>
+              </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" block @click="dialog2 = false">Close</v-btn>
               </v-card-actions>
@@ -193,7 +199,7 @@
               </v-btn>
             </template>
             <v-card width="800px" height="800px">
-              <v-card-text-3>
+              <v-card-text>
                 <div class="content-failureDefect-item">
                   <v-table fixed-header height="630px" class="pa-10 ">
                     <thead>
@@ -222,7 +228,7 @@
                     </tbody>
                   </v-table>
                 </div>
-              </v-card-text-3>
+              </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" block @click="dialog3 = false">Close</v-btn>
               </v-card-actions>
@@ -253,21 +259,38 @@
           <h3> {{ actual }} </h3>
         </a>
       </div>
-      <div class="content-BT-item">
+      <div class="content-BT-item" v-if="type == '1' || type == '2'">
         <h2>BOTTLE NECK</h2>
         <a>
           <h3> {{ bottleNeck }} </h3>
         </a>
       </div>
+      <div class="content-group-item1" v-if="type == '1'">
+        <h2>GROUP</h2>
+        <a>
+          <h3>{{ group }} </h3>
+        </a>
+      </div>
+      <div class="content-group-item2" v-if="type == '2'">
+        <h2>GROUP</h2>
+        <a>
+          <h3>{{ group }} </h3>
+        </a>
+      </div>
+      <div class="content-group-item3" v-if="type == '3'">
+        <h2>GROUP</h2>
+        <a>
+          <h3>{{ group }} </h3>
+        </a>
+      </div>
 
-
-      <div class="services-grid2">
+      <div class="services-grid2" v-if="type == '1' || type == '2'">
         <div class="content-DG-item">
           <div>
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar  :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
         </div>
         <div class="content-SG-item">
           <div>
@@ -275,18 +298,38 @@
           </div>
           <div class="scale">Frame</div>
           <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
+
+        </div>
+      </div>
+      <div class="services-grid3" v-if="type == '3'">
+        <div class="content-DG-item">
+          <div>
+            <h1>DOWNTIME</h1>
+          </div>
+          <div class="scale">min</div>
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+        </div>
+        <div class="content-SG-item">
+          <div>
+            <h1>DEFECT TYPE</h1>
+          </div>
+          <div class="scale">Frame</div>
+          <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
+
         </div>
       </div>
 
     </div>
   </div>
 </template>
-  
-  
+
+
 <script >
 import axiosInstance from '../utils/axios.instance';
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import moment from "moment";
+
 import { ref } from 'vue';
 import { Bar } from "vue-chartjs";
 import {
@@ -307,17 +350,24 @@ ChartJS.register(
   LinearScale
 );
 
-
 export default {
   name: 'FF',
   components: { Datepicker, Bar },
   setup() {
-    const month = ref({
-      month: new Date().getMonth(),
-      year: new Date().getFullYear()
-    });
-  },
+    const date = ref(new Date());
+    // In case of a range picker, you'll receive [Date, Date]
+    const format = (date) => {
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
 
+      return `${day}/${month}/${year}`;
+    }
+    return {
+      date,
+      format,
+    }
+  },
 
   data: () => ({
     interval: {},
@@ -333,14 +383,14 @@ export default {
     dialog1: false,
     dialog2: false,
     dialog3: false,
-    bottleNeck: '',
+    bottleNeck: 'NO DATA',
+    group: 'NO DATA',
     lineId: 1,
     station: [],
     stationData: [],
-    month: ref({
-      month: new Date().getMonth(),
-      year: new Date().getFullYear()
-    }),
+    date: ref(new Date()), // กำหนดค่าเริ่มต้นเป็นวันปัจจุบัน
+    format: "YYYY-MM-DD", // กำหนดรูปแบบวันที่
+    data: null,// เก็บข้อมูลที่ได้จาก API
     shift: 'DAY',
     bottleneck: null,
     downtimeDefect: [],
@@ -358,27 +408,25 @@ export default {
     sumrepairIns2: null,
     sumrepairIns3: null,
 
-    // reworkDefects: [],
-    // sumreworkDefects: null,
-    // sumreworkIns1: null,
-    // sumreworkIns2: null,
-    // sumreworkIns3: null,
+    reworkDefects: [],
+    sumreworkDefects: null,
+    sumreworkIns1: null,
+    sumreworkIns2: null,
+    sumreworkIns3: null,
 
     loaded: false,
 
   }),
   async mounted() {
-    console.log("month mm", new Date().getMonth() + 1);
-    console.log("month yy", new Date().getFullYear());
-    const dashboard = await axiosInstance.post('/dashboard/month', {
-      lineId: this.lineId,
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
+    console.log(this.type)
+    const dashboard = await axiosInstance.post('/dashboard/date', {
+      lineId: parseInt(this.type),
+      targetDate: new Date(),
       shift: "DAY"
     });
+
     this.loaded = false;
     try {
-
       this.target = dashboard.target;
       this.plan = dashboard.plan;
       this.actual = dashboard.actual;
@@ -389,6 +437,7 @@ export default {
       this.time = dashboard.workingTime.time;
       this.min = dashboard.workingTime.min;
       this.bottleNeck = dashboard.bottleNeck;
+      this.group = dashboard.group;
       this.downtimeDefect = dashboard.downtimeDefect;
       this.id = dashboard.downtimeDefect.id;
       this.details = dashboard.downtimeDefect.details;
@@ -430,7 +479,6 @@ export default {
       this.scrapDefects = dashboard.failureDefect.filter(
         (defect) => defect.type === "SCRAP"
       );
-
       for (let i = 0; i < dashboard.failureTotal; i++) {
         if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
           this.sumScrapDefects =
@@ -475,31 +523,32 @@ export default {
         }
       }
 
-      // // REWORK----------------------------------------------------------
-      // this.reworkDefects = dashboard.failureDefect.filter(
-      //   (defect) => defect.type === "REWORK"
-      // );
-      // for (let i = 0; i < dashboard.failureTotal; i++) {
-      //   if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-      //     this.sumreworkDefects =
-      //       this.sumreworkDefects + this.reworkDefects[i].sum;
-      //     this.countreworkDefects = this.countreworkDefects + 1;
-      //     if (this.reworkDefects[i].station == "Inspection 1") {
-      //       this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-      //       // console.log("this.sumreworkIns1", this.sumreworkIns1);
-      //     }
-      //     if (this.reworkDefects[i].station == "Inspection 2") {
-      //       this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-      //       // console.log("this.sumreworkIns2", this.sumreworkIns2);
-      //     }
-      //     if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-      //       this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-      //       // console.log("this.sumreworkIns3", this.sumreworkIns3);
-      //     }
-      //   }
-      // }
+      // REWORK----------------------------------------------------------
+      this.reworkDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "REWORK"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+          this.sumreworkDefects =
+            this.sumreworkDefects + this.reworkDefects[i].sum;
+          this.countreworkDefects = this.countreworkDefects + 1;
+          if (this.reworkDefects[i].station == "Inspection 1") {
+            this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns1", this.sumreworkIns1);
+          }
+          if (this.reworkDefects[i].station == "Inspection 2") {
+            this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns2", this.sumreworkIns2);
+          }
+          if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+            this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+            // console.log("this.sumreworkIns3", this.sumreworkIns3);
+          }
+        }
+      }
       this.loaded = true;
     } catch (e) {
+      this.AA()
       console.error(e);
     }
 
@@ -518,16 +567,40 @@ export default {
     console.log("plan", dashboard.plan);
 
   },
+
   methods: {
+    AA(){
+      this.target = 0;
+        this.plan = 0;
+        this.actual = 0;
+        this.OEE = 0;
+        this.availability = 0;
+        this.performance = 0;
+        this.quality = 0;
+        this.time = 0;
+        this.min = 0;
+        this.bottleNeck = 0;
+        this.group = 0
+        this.downtimeDefect = 0;
+        this.id = 0;
+        this.details = 0;
+        this.downtime = 0;
+        this.failureDefect = 0;
+        this.type = 0;
+        this.details = 0;
+        this.sum = 0;
+    },
+    gettype() {
+      return this.type;
+    },
     async update() {
-      console.log("month mm", new Date().getMonth() + 1);
-      console.log("month yy", new Date().getFullYear());
-      const dashboard = await axiosInstance.post('/dashboard/month', {
-        lineId: this.lineId,
-        month: this.month.month + 1,
-        year: this.month.year,
+      // console.log(moment(this.date).format('MMMM Do YYYY')+"09:00");
+      // console.log( moment(moment(this.date).format('MMMM Do YYYY')+"09:00", "MMMM Do YYYYHH:mm").toDate());
+      const dashboard = await axiosInstance.post('/dashboard/date', {
+        lineId: parseInt(this.type),
+        targetDate: moment(moment(this.date).format('MMMM Do YYYY')+"09:00", "MMMM Do YYYYHH:mm").toDate(),
         shift: this.shift
-      });
+      })
       this.loaded = false;
       try {
 
@@ -541,6 +614,7 @@ export default {
         this.time = dashboard.workingTime.time;
         this.min = dashboard.workingTime.min;
         this.bottleNeck = dashboard.bottleNeck;
+        this.group = dashboard.group
         this.downtimeDefect = dashboard.downtimeDefect;
         this.id = dashboard.downtimeDefect.id;
         this.details = dashboard.downtimeDefect.details;
@@ -553,11 +627,11 @@ export default {
         this.sum = dashboard.failureDefect.sum;
         //ตารางAvailability--------------------------------------------------
         this.bottleneck = dashboard.downtimeDefect.filter(
-          (bottleneck) => bottleneck.station === "OP06"
+          (bottleneck) => bottleneck.station === "OPF06"
         );
         //ตารางPerformance----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OP06"
+          (downtimenotBT) => downtimenotBT.station !== "OPF06"
         );
         // DOWNTIME----------------------------------------------------------
         const s = await axiosInstance.get(`/station/line/1`);
@@ -582,14 +656,6 @@ export default {
         this.scrapDefects = dashboard.failureDefect.filter(
           (defect) => defect.type === "SCRAP"
         );
-        //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
-        this.sumScrapIns1 = this.scrapDefects.fill();
-        console.log(this.sumScrapDefects);
-        this.sumScrapIns2 = Array(this.sumScrapDefects).fill(0);
-        console.log(this.sumScrapDefects);
-        this.sumScrapIns3 = Array(this.sumScrapDefects).fill(0);
-        console.log(this.sumScrapDefects);
-
         for (let i = 0; i < dashboard.failureTotal; i++) {
           if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
             this.sumScrapDefects =
@@ -597,15 +663,15 @@ export default {
             this.countScrapDefects = this.countScrapDefects + 1;
             if (this.scrapDefects[i].station == "Inspection 1") {
               this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
-              // console.log("this.sumScrapIns1", this.sumScrapIns1);
+              console.log("this.sumScrapIns1", this.sumScrapIns1);
             }
             if (this.scrapDefects[i].station == "Inspection 2") {
               this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
-              // console.log("this.sumScrapIns2", this.sumScrapIns2);
+              console.log("this.sumScrapIns2", this.sumScrapIns2);
             }
             if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
               this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
-              // console.log("this.sumScrapIns3", this.sumScrapIns3);
+              console.log("this.sumScrapIns3", this.sumScrapIns3);
             }
           }
         }
@@ -634,31 +700,32 @@ export default {
           }
         }
 
-        // // REWORK----------------------------------------------------------
-        // this.reworkDefects = dashboard.failureDefect.filter(
-        //   (defect) => defect.type === "REWORK"
-        // );
-        // for (let i = 0; i < dashboard.failureTotal; i++) {
-        //   if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-        //     this.sumreworkDefects =
-        //       this.sumreworkDefects + this.reworkDefects[i].sum;
-        //     this.countreworkDefects = this.countreworkDefects + 1;
-        //     if (this.reworkDefects[i].station == "Inspection 1") {
-        //       this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-        //       // console.log("this.sumreworkIns1", this.sumreworkIns1);
-        //     }
-        //     if (this.reworkDefects[i].station == "Inspection 2") {
-        //       this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-        //       // console.log("this.sumreworkIns2", this.sumreworkIns2);
-        //     }
-        //     if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-        //       this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-        //       // console.log("this.sumreworkIns3", this.sumreworkIns3);
-        //     }
-        //   }
-        // }
+        // REWORK----------------------------------------------------------
+        this.reworkDefects = dashboard.failureDefect.filter(
+          (defect) => defect.type === "REWORK"
+        );
+        for (let i = 0; i < dashboard.failureTotal; i++) {
+          if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+            this.sumreworkDefects =
+              this.sumreworkDefects + this.reworkDefects[i].sum;
+            this.countreworkDefects = this.countreworkDefects + 1;
+            if (this.reworkDefects[i].station == "Inspection 1") {
+              this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+              // console.log("this.sumreworkIns1", this.sumreworkIns1);
+            }
+            if (this.reworkDefects[i].station == "Inspection 2") {
+              this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+              // console.log("this.sumreworkIns2", this.sumreworkIns2);
+            }
+            if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+              this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+              // console.log("this.sumreworkIns3", this.sumreworkIns3);
+            }
+          }
+        }
         this.loaded = true;
       } catch (e) {
+        this.AA()
         console.error(e);
       }
 
@@ -681,6 +748,9 @@ export default {
 
   },
   computed: {
+    type() {       
+      return this.$route.params.type;     
+    },
     chartData1() {
       return {
         labels: this.station.map((n) => `${n.stationId}`),
@@ -707,20 +777,19 @@ export default {
             backgroundColor: "#FF7F00",
             data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
           },
-          // {
-          //   label: "REWORK",
-          //   backgroundColor: "#FFFF00",
-          //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
-          // },
+          {
+            label: "REWORK",
+            backgroundColor: "#FFFF00",
+            data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+          },
         ],
       };
     },
   },
 }
 
-
 </script>
-  
+
 <style scoped>
 .container {
   width: 1900px;
@@ -803,24 +872,24 @@ ul.BACK li a h2:hover {
   text-align: center;
   background: white;
   color: black;
-  padding: 10px 23px;
+  padding: 10px 28px;
 }
 
 .WT-item {
   background-color: #292929;
   color: white;
-  width: 271px;
-  height: 197px;
+  width: 270px;
+  height: 215px;
   border-radius: 15px;
   justify-items: center;
   margin-top: 127%;
-  transform: translatex(587%);
+  transform: translatex(589%);
   font-family: 'Sarabun', sans-serif;
   font-size: 20;
 }
 
 .DATA-item {
-  transform: translatey(-286%);
+  transform: translatey(-330%);
   font-size: 28px;
   font-family: 'Sarabun', sans-serif;
 }
@@ -831,9 +900,10 @@ ul.BACK li a h2:hover {
 
 ul.data-item li a h2 {
   font-family: 'Sarabun', sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   color: black;
   margin-left: 20%;
+  list-style-type: none;
   text-decoration: none;
   transition: .3s ease-in-out;
 }
@@ -848,7 +918,7 @@ ul.data-item li a h2 :hover {
 
 ul.data-item h2 {
   margin-left: 20%;
-  font-size: 22px;
+  font-size: 24px;
   color: blue;
 }
 
@@ -870,7 +940,7 @@ ul.Logout li a h2 {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(42px);
+  transform: translatey(47px);
   transition: .3s ease-in-out;
   margin-left: 40px;
 }
@@ -882,7 +952,7 @@ ul.Logout li a h2:hover {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(42px);
+  transform: translatey(47px);
   margin-left: 40px;
 }
 
@@ -933,7 +1003,7 @@ ul.Logout li a h2:hover {
 .v-select {
   font-size: 28px;
   font-family: 'Sarabun', sans-serif;
-  margin-top: -948px;
+  margin-top: -943px;
   color: black;
   transform: translatex(1575px);
 }
@@ -990,10 +1060,18 @@ ul.content-APQ-item li a :hover {
   grid-template-columns: repeat(3, 620px);
   width: 500px;
   height: 400px;
-  margin-left: -620px;
+  margin-left: -1240px;
   margin-top: -1%;
 }
 
+.services-grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 620px);
+  width: 500px;
+  height: 400px;
+  margin-left: -623px;
+  margin-top: -1%;
+}
 .content-DG-item {
   background: #F2F2F2;
   width: 570px;
@@ -1031,7 +1109,73 @@ ul.content-APQ-item li a :hover {
 
 }
 
+.content-group-item1 {
+  background: #D9D9D9;
+  width: 270px;
+  height: 130px;
+  padding: 10px;
+  border-radius: 20px;
+  text-align: center;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16px;
+  margin-top: 35%;
+  transform: translatex(230%);
+}
 
+a h3 {
+  background: white;
+  color: black;
+  width: 193px;
+  height: 50px;
+  justify-items: center;
+  text-align: center;
+  transform: translatex(25px);
+}
+
+.content-group-item2 {
+  background: #D9D9D9;
+  width: 270px;
+  height: 130px;
+  padding: 10px;
+  border-radius: 20px;
+  text-align: center;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16px;
+  margin-top: 35%;
+  transform: translatex(230%);
+}
+
+a h3 {
+  background: white;
+  color: black;
+  width: 193px;
+  height: 50px;
+  justify-items: center;
+  text-align: center;
+  transform: translatex(25px);
+}
+.content-group-item3 {
+  background: #D9D9D9;
+  width: 270px;
+  height: 130px;
+  padding: 10px;
+  border-radius: 20px;
+  text-align: center;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 16px;
+  margin-top: 35%;
+  transform: translatex(460%);
+}
+
+a h3 {
+  background: white;
+  color: black;
+  width: 193px;
+  height: 50px;
+  justify-items: center;
+  text-align: center;
+  transform: translatex(25px);
+}
 .content-BT-item {
   background: #D9D9D9;
   width: 270px;
@@ -1041,7 +1185,7 @@ ul.content-APQ-item li a :hover {
   text-align: center;
   font-family: 'Sarabun', sans-serif;
   font-size: 16px;
-  margin-top: 33%;
+  margin-top: 58%;
   transform: translatex(460%);
 }
 
@@ -1058,7 +1202,6 @@ a h3 {
   padding-top: 5px;
 }
 
-
 .v-card-text-1 content-downtime-item {
   font-size: 20px;
   font-family: 'Sarabun', sans-serif;
@@ -1072,6 +1215,7 @@ a h3 {
   padding-right: 5%;
 
 }
+
 
 .v-card--reveal {
   z-index: 1;
@@ -1090,4 +1234,3 @@ a h3 {
   box-shadow: 0 0 8px orangered;
 }
 </style>
-  
