@@ -512,6 +512,7 @@ export default {
       // }
       this.loaded = true;
     } catch (e) {
+      this.AA()
       console.error(e);
     }
 
@@ -532,6 +533,27 @@ export default {
   },
 
   methods: {
+    AA(){
+      this.target = 0;
+        this.plan = 0;
+        this.actual = 0;
+        this.OEE = 0;
+        this.availability = 0;
+        this.performance = 0;
+        this.quality = 0;
+        this.time = 0;
+        this.min = 0;
+        this.bottleNeck = 0;
+        this.group = 0
+        this.downtimeDefect = 0;
+        this.id = 0;
+        this.details = 0;
+        this.downtime = 0;
+        this.failureDefect = 0;
+        this.type = 0;
+        this.details = 0;
+        this.sum = 0;
+    },
 
     async update() {
       // console.log(moment(this.date).format('MMMM Do YYYY')+"09:00");
@@ -665,6 +687,7 @@ export default {
         // }
         this.loaded = true;
       } catch (e) {
+        this.AA()
         console.error(e);
       }
 
