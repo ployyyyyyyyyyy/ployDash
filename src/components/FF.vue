@@ -35,7 +35,7 @@
         <ul class="data-item">
           <h2>DATE</h2>
           <h3>
-            <Datepicker v-model="date" :format="format" @update:modelValue="update" />
+            <Datepicker v-model="date" :format="format" :enableTimePicker="false" @update:modelValue="update" />
           </h3>
           <li><router-link to="/FFweek">
               <h2 class="mb-6">WEEK</h2>
@@ -90,7 +90,9 @@
               <v-card width="800px" height="800px">
                 <v-card-text-1>
                   <div class="content-downtime-item">
-                    <div class="pa-8 " ><h3>Downtime at bottle neck </h3></div>
+                    <div class="pa-8 ">
+                      <h3>Downtime at bottle neck </h3>
+                    </div>
                     <v-table fixed-header height="630px">
                       <thead>
                         <tr>
@@ -270,15 +272,15 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData2" width="450" height="340" class="pa-4 "/>
-          
+          <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
+
         </div>
       </div>
 
@@ -290,7 +292,9 @@
 <script >
 import axiosInstance from '../utils/axios.instance';
 import Datepicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css"; 
+import "@vuepic/vue-datepicker/dist/main.css";
+import moment from "moment";
+
 import { ref } from 'vue';
 import { Bar } from "vue-chartjs";
 import {
@@ -336,7 +340,7 @@ export default {
     performance: 0,
     quality: 0,
     OEE: 0,
-    target: 0, 
+    target: 0,
     plan: 0,
     actual: 0,
     time: '-',
@@ -369,12 +373,12 @@ export default {
     sumrepairIns2: null,
     sumrepairIns3: null,
 
-    reworkDefects: [],
-    sumreworkDefects: null,
-    sumreworkIns1: null,
-    sumreworkIns2: null,
-    sumreworkIns3: null,
-    
+    // reworkDefects: [],
+    // sumreworkDefects: null,
+    // sumreworkIns1: null,
+    // sumreworkIns2: null,
+    // sumreworkIns3: null,
+
     loaded: false,
 
   }),
@@ -384,6 +388,7 @@ export default {
       targetDate: new Date(),
       shift: "DAY"
     });
+
     this.loaded = false;
     try {
       this.target = dashboard.target;
@@ -416,7 +421,7 @@ export default {
         (downtimenotBT) => downtimenotBT.station !== "OP06"
       );
       // DOWNTIME----------------------------------------------------------
-      const s = await axiosInstance.get(`/station/line/1`); 
+      const s = await axiosInstance.get(`/station/line/1`);
       // เอาข้อมูลมาเก็บ
       this.station = s;
       console.log(this.station);
@@ -457,7 +462,7 @@ export default {
           }
         }
       }
-      
+
       // REPAIR----------------------------------------------------------
       this.repairDefects = dashboard.failureDefect.filter(
         (defect) => defect.type === "REPAIR"
@@ -482,29 +487,29 @@ export default {
         }
       }
 
-      // REWORK----------------------------------------------------------
-      this.reworkDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "REWORK"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-          this.sumreworkDefects =
-            this.sumreworkDefects + this.reworkDefects[i].sum;
-          this.countreworkDefects = this.countreworkDefects + 1;
-          if (this.reworkDefects[i].station == "Inspection 1") {
-            this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns1", this.sumreworkIns1);
-          }
-          if (this.reworkDefects[i].station == "Inspection 2") {
-            this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns2", this.sumreworkIns2);
-          }
-          if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-            this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns3", this.sumreworkIns3);
-          }
-        }
-      }
+      // // REWORK----------------------------------------------------------
+      // this.reworkDefects = dashboard.failureDefect.filter(
+      //   (defect) => defect.type === "REWORK"
+      // );
+      // for (let i = 0; i < dashboard.failureTotal; i++) {
+      //   if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+      //     this.sumreworkDefects =
+      //       this.sumreworkDefects + this.reworkDefects[i].sum;
+      //     this.countreworkDefects = this.countreworkDefects + 1;
+      //     if (this.reworkDefects[i].station == "Inspection 1") {
+      //       this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+      //       // console.log("this.sumreworkIns1", this.sumreworkIns1);
+      //     }
+      //     if (this.reworkDefects[i].station == "Inspection 2") {
+      //       this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+      //       // console.log("this.sumreworkIns2", this.sumreworkIns2);
+      //     }
+      //     if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+      //       this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+      //       // console.log("this.sumreworkIns3", this.sumreworkIns3);
+      //     }
+      //   }
+      // }
       this.loaded = true;
     } catch (e) {
       console.error(e);
@@ -525,155 +530,157 @@ export default {
     console.log("plan", dashboard.plan);
 
   },
+
   methods: {
 
     async update() {
-
+      // console.log(moment(this.date).format('MMMM Do YYYY')+"09:00");
+      // console.log( moment(moment(this.date).format('MMMM Do YYYY')+"09:00", "MMMM Do YYYYHH:mm").toDate());
       const dashboard = await axiosInstance.post('/dashboard/date', {
         lineId: this.lineId,
-        targetDate: this.date,
+        targetDate: moment(moment(this.date).format('MMMM Do YYYY')+"09:00", "MMMM Do YYYYHH:mm").toDate(),
         shift: this.shift
       })
       this.loaded = false;
-    try {
+      try {
 
-      this.target = dashboard.target;
-      this.plan = dashboard.plan;
-      this.actual = dashboard.actual;
-      this.OEE = dashboard.oee;
-      this.availability = dashboard.availability;
-      this.performance = dashboard.performance;
-      this.quality = dashboard.quality;
-      this.time = dashboard.workingTime.time;
-      this.min = dashboard.workingTime.min;
-      this.bottleNeck = dashboard.bottleNeck;
-      this.group = dashboard.group
-      this.downtimeDefect = dashboard.downtimeDefect;
-      this.id = dashboard.downtimeDefect.id;
-      this.details = dashboard.downtimeDefect.details;
-      this.station = dashboard.downtimeDefect.station;
-      this.downtime = dashboard.downtimeDefect.downtime;
-      this.failureDefect = dashboard.failureDefect;
-      this.type = dashboard.failureDefect.type;
-      this.details = dashboard.failureDefect.details;
-      this.station = dashboard.failureDefect.station;
-      this.sum = dashboard.failureDefect.sum;
-      //ตารางAvailability--------------------------------------------------
-      this.bottleneck = dashboard.downtimeDefect.filter(
-        (bottleneck) => bottleneck.station === "OP06"
-      );
-      //ตารางPerformance----------------------------------------------------
-      this.downtimenotBT = dashboard.downtimeDefect.filter(
-        (downtimenotBT) => downtimenotBT.station !== "OP06"
-      );
-      // DOWNTIME----------------------------------------------------------
-      const s = await axiosInstance.get(`/station/line/1`); 
-      // เอาข้อมูลมาเก็บ
-      this.station = s;
-      console.log(this.station);
-      //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
-      this.stationData = Array(this.station.length).fill(0);
-      console.log(this.stationData);
+        this.target = dashboard.target;
+        this.plan = dashboard.plan;
+        this.actual = dashboard.actual;
+        this.OEE = dashboard.oee;
+        this.availability = dashboard.availability;
+        this.performance = dashboard.performance;
+        this.quality = dashboard.quality;
+        this.time = dashboard.workingTime.time;
+        this.min = dashboard.workingTime.min;
+        this.bottleNeck = dashboard.bottleNeck;
+        this.group = dashboard.group
+        this.downtimeDefect = dashboard.downtimeDefect;
+        this.id = dashboard.downtimeDefect.id;
+        this.details = dashboard.downtimeDefect.details;
+        this.station = dashboard.downtimeDefect.station;
+        this.downtime = dashboard.downtimeDefect.downtime;
+        this.failureDefect = dashboard.failureDefect;
+        this.type = dashboard.failureDefect.type;
+        this.details = dashboard.failureDefect.details;
+        this.station = dashboard.failureDefect.station;
+        this.sum = dashboard.failureDefect.sum;
+        //ตารางAvailability--------------------------------------------------
+        this.bottleneck = dashboard.downtimeDefect.filter(
+          (bottleneck) => bottleneck.station === "OP06"
+        );
+        //ตารางPerformance----------------------------------------------------
+        this.downtimenotBT = dashboard.downtimeDefect.filter(
+          (downtimenotBT) => downtimenotBT.station !== "OP06"
+        );
+        // DOWNTIME----------------------------------------------------------
+        const s = await axiosInstance.get(`/station/line/1`);
+        // เอาข้อมูลมาเก็บ
+        this.station = s;
+        console.log(this.station);
+        //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
+        this.stationData = Array(this.station.length).fill(0);
+        console.log(this.stationData);
 
-      for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
-        console.log(dashboard.downtimeDefect[i]);
-        for (let j = 0; j < this.station.length; j++) {
-          if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
-            this.stationData[j] =
-              this.stationData[j] + dashboard.downtimeDefect[i].downtime;
-            console.log(this.stationData);
+        for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
+          console.log(dashboard.downtimeDefect[i]);
+          for (let j = 0; j < this.station.length; j++) {
+            if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
+              this.stationData[j] =
+                this.stationData[j] + dashboard.downtimeDefect[i].downtime;
+              console.log(this.stationData);
+            }
           }
         }
-      }
-      // SCRAP----------------------------------------------------------
-      this.scrapDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "SCRAP"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
-          this.sumScrapDefects =
-            this.sumScrapDefects + this.scrapDefects[i].sum;
-          this.countScrapDefects = this.countScrapDefects + 1;
-          if (this.scrapDefects[i].station == "Inspection 1") {
-            this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
-            console.log("this.sumScrapIns1", this.sumScrapIns1);
-          }
-          if (this.scrapDefects[i].station == "Inspection 2") {
-            this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
-            console.log("this.sumScrapIns2", this.sumScrapIns2);
-          }
-          if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
-            this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
-            console.log("this.sumScrapIns3", this.sumScrapIns3);
-          }
-        }
-      }
-      
-      // REPAIR----------------------------------------------------------
-      this.repairDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "REPAIR"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.repairDefects[i] && this.repairDefects[i].sum) {
-          this.sumrepairDefects =
-            this.sumrepairDefects + this.repairDefects[i].sum;
-          this.countrepairDefects = this.countrepairDefects + 1;
-          if (this.repairDefects[i].station == "Inspection 1") {
-            this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
-            // console.log("this.sumrepairIns1", this.sumrepairIns1);
-          }
-          if (this.repairDefects[i].station == "Inspection 2") {
-            this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
-            // console.log("this.sumrepairIns2", this.sumrepairIns2);
-          }
-          if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
-            this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
-            // console.log("this.sumrepairIns3", this.sumrepairIns3);
+        // SCRAP----------------------------------------------------------
+        this.scrapDefects = dashboard.failureDefect.filter(
+          (defect) => defect.type === "SCRAP"
+        );
+        for (let i = 0; i < dashboard.failureTotal; i++) {
+          if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
+            this.sumScrapDefects =
+              this.sumScrapDefects + this.scrapDefects[i].sum;
+            this.countScrapDefects = this.countScrapDefects + 1;
+            if (this.scrapDefects[i].station == "Inspection 1") {
+              this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
+              console.log("this.sumScrapIns1", this.sumScrapIns1);
+            }
+            if (this.scrapDefects[i].station == "Inspection 2") {
+              this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
+              console.log("this.sumScrapIns2", this.sumScrapIns2);
+            }
+            if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
+              this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
+              console.log("this.sumScrapIns3", this.sumScrapIns3);
+            }
           }
         }
+
+        // REPAIR----------------------------------------------------------
+        this.repairDefects = dashboard.failureDefect.filter(
+          (defect) => defect.type === "REPAIR"
+        );
+        for (let i = 0; i < dashboard.failureTotal; i++) {
+          if (this.repairDefects[i] && this.repairDefects[i].sum) {
+            this.sumrepairDefects =
+              this.sumrepairDefects + this.repairDefects[i].sum;
+            this.countrepairDefects = this.countrepairDefects + 1;
+            if (this.repairDefects[i].station == "Inspection 1") {
+              this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
+              // console.log("this.sumrepairIns1", this.sumrepairIns1);
+            }
+            if (this.repairDefects[i].station == "Inspection 2") {
+              this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
+              // console.log("this.sumrepairIns2", this.sumrepairIns2);
+            }
+            if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
+              this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
+              // console.log("this.sumrepairIns3", this.sumrepairIns3);
+            }
+          }
+        }
+
+        // // REWORK----------------------------------------------------------
+        // this.reworkDefects = dashboard.failureDefect.filter(
+        //   (defect) => defect.type === "REWORK"
+        // );
+        // for (let i = 0; i < dashboard.failureTotal; i++) {
+        //   if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+        //     this.sumreworkDefects =
+        //       this.sumreworkDefects + this.reworkDefects[i].sum;
+        //     this.countreworkDefects = this.countreworkDefects + 1;
+        //     if (this.reworkDefects[i].station == "Inspection 1") {
+        //       this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+        //       // console.log("this.sumreworkIns1", this.sumreworkIns1);
+        //     }
+        //     if (this.reworkDefects[i].station == "Inspection 2") {
+        //       this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+        //       // console.log("this.sumreworkIns2", this.sumreworkIns2);
+        //     }
+        //     if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+        //       this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+        //       // console.log("this.sumreworkIns3", this.sumreworkIns3);
+        //     }
+        //   }
+        // }
+        this.loaded = true;
+      } catch (e) {
+        console.error(e);
       }
 
-      // REWORK----------------------------------------------------------
-      this.reworkDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "REWORK"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-          this.sumreworkDefects =
-            this.sumreworkDefects + this.reworkDefects[i].sum;
-          this.countreworkDefects = this.countreworkDefects + 1;
-          if (this.reworkDefects[i].station == "Inspection 1") {
-            this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns1", this.sumreworkIns1);
-          }
-          if (this.reworkDefects[i].station == "Inspection 2") {
-            this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns2", this.sumreworkIns2);
-          }
-          if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-            this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns3", this.sumreworkIns3);
-          }
-        }
-      }
-      this.loaded = true;
-    } catch (e) {
-      console.error(e);
-    }
-
-    console.log("dashboard", dashboard);
-    console.log("actual", dashboard.actual);
-    console.log("OEE", dashboard.OEE);
-    console.log("availability", dashboard.availability);
-    console.log("dashboaperformancerd", dashboard.performance);
-    console.log("quality", dashboard.quality);
-    // console.log("dashboard", dashboardbar.bar);
-    // console.log("dashboard", dashboardbar.min);
-    // console.log("dashboard", dashboardbar.time);
-    console.log("workingTime", dashboard.workingTime);
-    console.log("workingTime.min", dashboard.workingTime.min);
-    console.log("bottleNeck", dashboard.bottleNeck);
-    console.log("plan", dashboard.plan);
+      console.log("dashboard", dashboard);
+      console.log("actual", dashboard.actual);
+      console.log("OEE", dashboard.OEE);
+      console.log("availability", dashboard.availability);
+      console.log("dashboaperformancerd", dashboard.performance);
+      console.log("quality", dashboard.quality);
+      // console.log("dashboard", dashboardbar.bar);
+      // console.log("dashboard", dashboardbar.min);
+      // console.log("dashboard", dashboardbar.time);
+      console.log("workingTime", dashboard.workingTime);
+      console.log("workingTime.min", dashboard.workingTime.min);
+      console.log("bottleNeck", dashboard.bottleNeck);
+      console.log("plan", dashboard.plan);
 
     },
 
@@ -691,7 +698,7 @@ export default {
           },
         ],
       };
-  },
+    },
     chartData2() {
       return {
         labels: ["Inspection 1", "Inspection 2", "Q-Gate Inspection 3"],
@@ -706,11 +713,11 @@ export default {
             backgroundColor: "#FF7F00",
             data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
           },
-          {
-            label: "REWORK",
-            backgroundColor: "#FFFF00",
-            data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
-          },
+          // {
+          //   label: "REWORK",
+          //   backgroundColor: "#FFFF00",
+          //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+          // },
         ],
       };
     },
@@ -808,7 +815,7 @@ ul.BACK li a h2:hover {
   background-color: #292929;
   color: white;
   width: 270px;
-  height: 197px;
+  height: 215px;
   border-radius: 15px;
   justify-items: center;
   margin-top: 127%;
@@ -818,7 +825,7 @@ ul.BACK li a h2:hover {
 }
 
 .DATA-item {
-  transform: translatey(-320%);
+  transform: translatey(-330%);
   font-size: 28px;
   font-family: 'Sarabun', sans-serif;
 }
@@ -869,7 +876,7 @@ ul.Logout li a h2 {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(65px);
+  transform: translatey(47px);
   transition: .3s ease-in-out;
   margin-left: 40px;
 }
@@ -881,7 +888,7 @@ ul.Logout li a h2:hover {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(65px);
+  transform: translatey(47px);
   margin-left: 40px;
 }
 
@@ -932,7 +939,7 @@ ul.Logout li a h2:hover {
 .v-select {
   font-size: 28px;
   font-family: 'Sarabun', sans-serif;
-  margin-top: -925px;
+  margin-top: -943px;
   color: black;
   transform: translatex(1575px);
 }
@@ -1039,7 +1046,7 @@ ul.content-APQ-item li a :hover {
   text-align: center;
   font-family: 'Sarabun', sans-serif;
   font-size: 16px;
-  margin-top: 33%;
+  margin-top: 35%;
   transform: translatex(230%);
 }
 

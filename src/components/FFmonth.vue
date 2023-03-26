@@ -358,11 +358,11 @@ export default {
     sumrepairIns2: null,
     sumrepairIns3: null,
 
-    reworkDefects: [],
-    sumreworkDefects: null,
-    sumreworkIns1: null,
-    sumreworkIns2: null,
-    sumreworkIns3: null,
+    // reworkDefects: [],
+    // sumreworkDefects: null,
+    // sumreworkIns1: null,
+    // sumreworkIns2: null,
+    // sumreworkIns3: null,
 
     loaded: false,
 
@@ -475,29 +475,29 @@ export default {
         }
       }
 
-      // REWORK----------------------------------------------------------
-      this.reworkDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "REWORK"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-          this.sumreworkDefects =
-            this.sumreworkDefects + this.reworkDefects[i].sum;
-          this.countreworkDefects = this.countreworkDefects + 1;
-          if (this.reworkDefects[i].station == "Inspection 1") {
-            this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns1", this.sumreworkIns1);
-          }
-          if (this.reworkDefects[i].station == "Inspection 2") {
-            this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns2", this.sumreworkIns2);
-          }
-          if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-            this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-            // console.log("this.sumreworkIns3", this.sumreworkIns3);
-          }
-        }
-      }
+      // // REWORK----------------------------------------------------------
+      // this.reworkDefects = dashboard.failureDefect.filter(
+      //   (defect) => defect.type === "REWORK"
+      // );
+      // for (let i = 0; i < dashboard.failureTotal; i++) {
+      //   if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+      //     this.sumreworkDefects =
+      //       this.sumreworkDefects + this.reworkDefects[i].sum;
+      //     this.countreworkDefects = this.countreworkDefects + 1;
+      //     if (this.reworkDefects[i].station == "Inspection 1") {
+      //       this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+      //       // console.log("this.sumreworkIns1", this.sumreworkIns1);
+      //     }
+      //     if (this.reworkDefects[i].station == "Inspection 2") {
+      //       this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+      //       // console.log("this.sumreworkIns2", this.sumreworkIns2);
+      //     }
+      //     if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+      //       this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+      //       // console.log("this.sumreworkIns3", this.sumreworkIns3);
+      //     }
+      //   }
+      // }
       this.loaded = true;
     } catch (e) {
       console.error(e);
@@ -634,29 +634,29 @@ export default {
           }
         }
 
-        // REWORK----------------------------------------------------------
-        this.reworkDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "REWORK"
-        );
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-            this.sumreworkDefects =
-              this.sumreworkDefects + this.reworkDefects[i].sum;
-            this.countreworkDefects = this.countreworkDefects + 1;
-            if (this.reworkDefects[i].station == "Inspection 1") {
-              this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns1", this.sumreworkIns1);
-            }
-            if (this.reworkDefects[i].station == "Inspection 2") {
-              this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns2", this.sumreworkIns2);
-            }
-            if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns3", this.sumreworkIns3);
-            }
-          }
-        }
+        // // REWORK----------------------------------------------------------
+        // this.reworkDefects = dashboard.failureDefect.filter(
+        //   (defect) => defect.type === "REWORK"
+        // );
+        // for (let i = 0; i < dashboard.failureTotal; i++) {
+        //   if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+        //     this.sumreworkDefects =
+        //       this.sumreworkDefects + this.reworkDefects[i].sum;
+        //     this.countreworkDefects = this.countreworkDefects + 1;
+        //     if (this.reworkDefects[i].station == "Inspection 1") {
+        //       this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+        //       // console.log("this.sumreworkIns1", this.sumreworkIns1);
+        //     }
+        //     if (this.reworkDefects[i].station == "Inspection 2") {
+        //       this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+        //       // console.log("this.sumreworkIns2", this.sumreworkIns2);
+        //     }
+        //     if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+        //       this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+        //       // console.log("this.sumreworkIns3", this.sumreworkIns3);
+        //     }
+        //   }
+        // }
         this.loaded = true;
       } catch (e) {
         console.error(e);
@@ -707,11 +707,11 @@ export default {
             backgroundColor: "#FF7F00",
             data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
           },
-          {
-            label: "REWORK",
-            backgroundColor: "#FFFF00",
-            data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
-          },
+          // {
+          //   label: "REWORK",
+          //   backgroundColor: "#FFFF00",
+          //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+          // },
         ],
       };
     },
