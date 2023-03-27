@@ -2,13 +2,13 @@
   <div class="container">
     <div class="manu">
       <header v-if="type == '1'">
-        <h1 >OEE : Fabrication of F Frame</h1>
+        <h1>OEE : Fabrication of F Frame</h1>
       </header>
       <header v-if="type == '2'">
-        <h1 >OEE : Fabrication of S Frame</h1>
+        <h1>OEE : Fabrication of S Frame</h1>
       </header>
       <header v-if="type == '3'">
-        <h1 >OEE : Powder Coat Painting</h1>
+        <h1>OEE : Powder Coat Painting</h1>
       </header>
       <div class="BACK-item">
         <ul class="BACK">
@@ -39,12 +39,12 @@
       </div>
       <div class="DATA-item">
         <ul class="data-item">
-          <li><router-link :to="/date/+ gettype()">
-              <h2 class="mb-6">DATE</h2>
-            </router-link></li>
-          <li><router-link :to="/week/+ gettype()">
-              <h2>WEEK</h2>
-            </router-link></li>
+          <router-link :to="/date/ + gettype()">
+            <h2 class="mb-6 text-black">DATE</h2>
+          </router-link>
+          <router-link :to="/week/ + gettype()">
+            <h2 class="mb-6 text-black">WEEK</h2>
+          </router-link>
           <h2 class="mt-6">MONTH</h2>
           <h3>
             <Datepicker v-model="month" month-picker @update:modelValue="update" />
@@ -99,7 +99,7 @@
                     <div class="mt-5" v-if="type == '1' || type == '2'">
                       <h3>Downtime at bottle neck </h3>
                     </div>
-                    <v-table fixed-header height="630px" class="pa-10 ">
+                    <v-table fixed-header height="590px" class="pa-10 ">
                       <thead>
                         <tr>
                           <th>
@@ -259,7 +259,7 @@
           <h3> {{ actual }} </h3>
         </a>
       </div>
-      <div class="content-BT-item"  v-if="type == '1' || type == '2'">
+      <div class="content-BT-item" v-if="type == '1' || type == '2'">
         <h2>BOTTLE NECK</h2>
         <a>
           <h3> {{ bottleNeck }} </h3>
@@ -273,7 +273,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar  :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
         </div>
         <div class="content-SG-item">
           <div>
@@ -290,7 +290,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar  :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
         </div>
         <div class="content-SG-item">
           <div>
@@ -356,9 +356,11 @@ export default {
     dialog1: false,
     dialog2: false,
     dialog3: false,
-    bottleNeck: '',
+    bottleNeck: '-',
     lineId: 1,
     station: [],
+    stationForChart: [],
+    stationIns: [],
     stationData: [],
     month: ref({
       month: new Date().getMonth(),
@@ -388,6 +390,10 @@ export default {
     sumreworkIns3: null,
 
     loaded: false,
+    OEEOld: 101,
+    availabilityOld: 101,
+    performanceOld: 101,
+    qualityOld: 101,
 
   }),
   async mounted() {
@@ -432,9 +438,10 @@ export default {
         (downtimenotBT) => downtimenotBT.station !== "OP06"
       );
       // DOWNTIME----------------------------------------------------------
-      const s = await axiosInstance.get(`/station/line/1`);
+      const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
       // เอาข้อมูลมาเก็บ
       this.station = s;
+      this.stationForChart = s;
       console.log(this.station);
       //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
       this.stationData = Array(this.station.length).fill(0);
@@ -450,6 +457,16 @@ export default {
           }
         }
       }
+
+      //defect graph----------------------------------------------------
+      this.stationIns = this.station.filter((e) => {
+        const re = new RegExp("inspection", "i");
+        return re.test(e.stationName);
+      });
+
+      console.log("this.stationIns", this.station);
+      console.log("this.stationIns", this.stationIns.map(station => station.stationId));
+
       // SCRAP----------------------------------------------------------
       this.scrapDefects = dashboard.failureDefect.filter(
         (defect) => defect.type === "SCRAP"
@@ -543,26 +560,46 @@ export default {
 
   },
   methods: {
-    AA(){
+    AA() {
       this.target = 0;
-        this.plan = 0;
-        this.actual = 0;
-        this.OEE = 0;
-        this.availability = 0;
-        this.performance = 0;
-        this.quality = 0;
-        this.time = 0;
-        this.min = 0;
-        this.bottleNeck = 0;
-        this.group = 0
-        this.downtimeDefect = 0;
-        this.id = 0;
-        this.details = 0;
-        this.downtime = 0;
-        this.failureDefect = 0;
-        this.type = 0;
-        this.details = 0;
-        this.sum = 0;
+      this.plan = 0;
+      this.actual = 0;
+      this.OEE = 0;
+      this.availability = 0;
+      this.performance = 0;
+      this.quality = 0;
+      this.time = 0;
+      this.min = 0;
+      this.bottleNeck = 0;
+      this.group = 0
+      this.downtimeDefect = 0;
+      this.id = 0;
+      this.details = 0;
+      this.downtime = 0;
+      this.failureDefect = 0;
+      this.type = 0;
+      this.details = 0;
+      this.sum = 0;
+      this.sumScrapIns1 = 0;
+      this.sumScrapIns2 = 0;
+      this.sumScrapIns3 = 0;
+      this.sumrepairIns1 = 0;
+      this.sumrepairIns2 = 0;
+      this.sumrepairIns3 = 0;
+      this.sumreworkIns1 = 0;
+      this.sumreworkIns2 = 0;
+      this.sumreworkIns3 = 0;
+    },
+    setChart() {
+      this.sumScrapIns1 = 0;
+      this.sumScrapIns2 = 0;
+      this.sumScrapIns3 = 0;
+      this.sumrepairIns1 = 0;
+      this.sumrepairIns2 = 0;
+      this.sumrepairIns3 = 0;
+      this.sumreworkIns1 = 0;
+      this.sumreworkIns2 = 0;
+      this.sumreworkIns3 = 0;
     },
     gettype() {
       return this.type;
@@ -608,14 +645,11 @@ export default {
           (downtimenotBT) => downtimenotBT.station !== "OPF06"
         );
         // DOWNTIME----------------------------------------------------------
-        const s = await axiosInstance.get(`/station/line/1`);
-        // เอาข้อมูลมาเก็บ
+        const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
         this.station = s;
-        console.log(this.station);
-        //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
+        console.log("this.station", this.station);
         this.stationData = Array(this.station.length).fill(0);
         console.log(this.stationData);
-
         for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
           console.log(dashboard.downtimeDefect[i]);
           for (let j = 0; j < this.station.length; j++) {
@@ -626,78 +660,93 @@ export default {
             }
           }
         }
-        // SCRAP----------------------------------------------------------
-        this.scrapDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "SCRAP"
-        );
 
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
-            this.sumScrapDefects =
-              this.sumScrapDefects + this.scrapDefects[i].sum;
-            this.countScrapDefects = this.countScrapDefects + 1;
-            if (this.scrapDefects[i].station == "Inspection 1") {
-              this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
-              console.log("this.sumScrapIns1", this.sumScrapIns1);
-            }
-            if (this.scrapDefects[i].station == "Inspection 2") {
-              this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
-              console.log("this.sumScrapIns2", this.sumScrapIns2);
-            }
-            if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
-              console.log("this.sumScrapIns3", this.sumScrapIns3);
+        this.setChart()
+        if (this.OEEOld !== this.OEE && this.availabilityOld !== this.availability && this.performanceOld !== this.performance && this.qualityOld !== this.quality) {
+          this.OEEOld == this.OEE
+          this.availabilityOld == this.availability
+          this.performanceOld == this.performance
+          this.qualityOld == this.quality
+
+          console.log("cgffd");
+
+          // SCRAP----------------------------------------------------------
+          this.scrapDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "SCRAP"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
+              this.sumScrapDefects =
+                this.sumScrapDefects + this.scrapDefects[i].sum;
+              this.countScrapDefects = this.countScrapDefects + 1;
+              if (this.scrapDefects[i].station == "Inspection 1") {
+                this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
+                console.log("this.sumScrapIns1", this.sumScrapIns1);
+              }
+              if (this.scrapDefects[i].station == "Inspection 2") {
+                this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
+                console.log("this.sumScrapIns2", this.sumScrapIns2);
+              }
+              if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
+                this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
+                console.log("this.sumScrapIns3", this.sumScrapIns3);
+              }
             }
           }
-        }
 
-        // REPAIR----------------------------------------------------------
-        this.repairDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "REPAIR"
-        );
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.repairDefects[i] && this.repairDefects[i].sum) {
-            this.sumrepairDefects =
-              this.sumrepairDefects + this.repairDefects[i].sum;
-            this.countrepairDefects = this.countrepairDefects + 1;
-            if (this.repairDefects[i].station == "Inspection 1") {
-              this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns1", this.sumrepairIns1);
-            }
-            if (this.repairDefects[i].station == "Inspection 2") {
-              this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns2", this.sumrepairIns2);
-            }
-            if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns3", this.sumrepairIns3);
+          // REPAIR----------------------------------------------------------
+          this.repairDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "REPAIR"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.repairDefects[i] && this.repairDefects[i].sum) {
+              this.sumrepairDefects =
+                this.sumrepairDefects + this.repairDefects[i].sum;
+              this.countrepairDefects = this.countrepairDefects + 1;
+              if (this.repairDefects[i].station == "Inspection 1") {
+                this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns1", this.sumrepairIns1);
+              }
+              if (this.repairDefects[i].station == "Inspection 2") {
+                this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns2", this.sumrepairIns2);
+              }
+              if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
+                this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns3", this.sumrepairIns3);
+              }
             }
           }
-        }
 
-        // REWORK----------------------------------------------------------
-        this.reworkDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "REWORK"
-        );
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-            this.sumreworkDefects =
-              this.sumreworkDefects + this.reworkDefects[i].sum;
-            this.countreworkDefects = this.countreworkDefects + 1;
-            if (this.reworkDefects[i].station == "Inspection 1") {
-              this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns1", this.sumreworkIns1);
-            }
-            if (this.reworkDefects[i].station == "Inspection 2") {
-              this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns2", this.sumreworkIns2);
-            }
-            if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns3", this.sumreworkIns3);
+          // REWORK----------------------------------------------------------
+          this.reworkDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "REWORK"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+              this.sumreworkDefects =
+                this.sumreworkDefects + this.reworkDefects[i].sum;
+              this.countreworkDefects = this.countreworkDefects + 1;
+              if (this.reworkDefects[i].station == "Inspection 1") {
+                this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+                // console.log("this.sumreworkIns1", this.sumreworkIns1);
+              }
+              if (this.reworkDefects[i].station == "Inspection 2") {
+                this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+                // console.log("this.sumreworkIns2", this.sumreworkIns2);
+              }
+              if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+                this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+                // console.log("this.sumreworkIns3", this.sumreworkIns3);
+              }
             }
           }
+          // this.stationData = Array(this.station.length).fill(0);
+          // console.log(this.stationData);
         }
+        // if (this.OEE == 0) {
+        //   this.stationData = Array(this.station.length).fill(0);
+        // }
         this.loaded = true;
       } catch (e) {
         this.AA()
@@ -723,12 +772,12 @@ export default {
 
   },
   computed: {
-    type() {       
-      return this.$route.params.type;     
+    type() {
+      return this.$route.params.type;
     },
     chartData1() {
       return {
-        labels: this.station.map((n) => `${n.stationId}`),
+        labels: this.stationForChart.map(station => station.stationId),
         datasets: [
           {
             label: "Downtime",
@@ -740,7 +789,7 @@ export default {
     },
     chartData2() {
       return {
-        labels: ["Inspection 1", "Inspection 2", "Q-Gate Inspection 3"],
+        labels: this.stationIns.map(station => station.stationName),
         datasets: [
           {
             label: "SCRAP",
@@ -1047,6 +1096,7 @@ ul.content-APQ-item li a :hover {
   margin-left: -3px;
   margin-top: -1%;
 }
+
 .content-DG-item {
   background: #F2F2F2;
   width: 570px;

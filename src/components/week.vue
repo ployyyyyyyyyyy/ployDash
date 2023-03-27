@@ -39,16 +39,16 @@
       </div>
       <div class="DATA-item">
         <ul class="data-item">
-          <li><router-link :to="/date/+ gettype()">
-              <h2 class="mb-6">DATE</h2>
-            </router-link></li>
+          <router-link :to="/date/+ gettype()">
+              <h2 class="mb-6 text-black">DATE</h2>
+            </router-link>
           <h2>WEEK</h2>
           <h3>
             <Datepicker v-model="date" range auto-range="6" :enableTimePicker="false" :format="formatRange" @update:modelValue="update" />
           </h3>
-          <li><router-link :to="/month/+ gettype()">
-              <h2>MONTH</h2>
-            </router-link></li>
+          <router-link :to="/month/+ gettype()">
+              <h2 class="mb-6 text-black">MONTH</h2>
+            </router-link>
         </ul>
       </div>
       <div class="Logout-item">
@@ -99,7 +99,7 @@
                     <div class="mt-5" v-if="type == '1' || type == '2'">
                       <h3>Downtime at bottle neck </h3>
                     </div>
-                    <v-table fixed-header height="630px" class="pa-10 ">
+                    <v-table fixed-header height="590px" class="pa-10 ">
                       <thead>
                         <tr>
                           <th>
@@ -151,7 +151,7 @@
             <v-card width="800px" height="800px">
               <v-card-text>
                 <div class="content-downtime-item">
-                  <v-table fixed-header height="630px" class="pa-10 ">
+                  <v-table fixed-header height="590px" class="pa-10 ">
                     <thead>
                       <tr>
                         <th>
@@ -345,9 +345,11 @@ export default {
     actual: 0,
     time: '-',
     min: '-',
-    bottleNeck: 'NO DATA',
+    bottleNeck: '-',
     lineId: 1,
     station: [],
+    stationForChart: [],
+    stationIns: [],
     stationData: [],
     dialog1: false,
     dialog2: false,
@@ -384,6 +386,12 @@ export default {
     sumreworkIns1: null,
     sumreworkIns2: null,
     sumreworkIns3: null,
+
+    loaded: false,
+    OEEOld: 101,
+    availability: 101,
+    performance: 101,
+    quality: 101,
     
     loaded: false,
   }),
@@ -435,9 +443,10 @@ export default {
         (downtimenotBT) => downtimenotBT.station !== "OP06"
       );
       // DOWNTIME----------------------------------------------------------
-      const s = await axiosInstance.get(`/station/line/1`); 
+      const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
       // เอาข้อมูลมาเก็บ
       this.station = s;
+      this.stationForChart = s;
       console.log(this.station);
       //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
       this.stationData = Array(this.station.length).fill(0);
@@ -453,6 +462,14 @@ export default {
           }
         }
       }
+      //defect graph----------------------------------------------------
+      this.stationIns = this.station.filter((e) => {
+        const re = new RegExp("inspection", "i");
+        return re.test(e.stationName);
+      });
+
+      console.log("this.stationIns", this.station);
+      console.log("this.stationIns", this.stationIns.map(station => station.stationId));
       // SCRAP----------------------------------------------------------
       this.scrapDefects = dashboard.failureDefect.filter(
         (defect) => defect.type === "SCRAP"
@@ -566,6 +583,17 @@ export default {
         this.details = 0;
         this.sum = 0;
     },
+    setChart() {
+      this.sumScrapIns1 = 0;
+      this.sumScrapIns2 = 0;
+      this.sumScrapIns3 = 0;
+      this.sumrepairIns1 = 0;
+      this.sumrepairIns2 = 0;
+      this.sumrepairIns3 = 0;
+      this.sumreworkIns1 = 0;
+      this.sumreworkIns2 = 0;
+      this.sumreworkIns3 = 0;
+    },
     gettype() {
       return this.type;
     },
@@ -608,25 +636,30 @@ export default {
       this.downtimenotBT = dashboard.downtimeDefect.filter(
         (downtimenotBT) => downtimenotBT.station !== "OPF06"
       );
-      // DOWNTIME----------------------------------------------------------
-      const s = await axiosInstance.get(`/station/line/1`); 
-      // เอาข้อมูลมาเก็บ
-      this.station = s;
-      console.log(this.station);
-      //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
-      this.stationData = Array(this.station.length).fill(0);
-      console.log(this.stationData);
-
-      for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
-        console.log(dashboard.downtimeDefect[i]);
-        for (let j = 0; j < this.station.length; j++) {
-          if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
-            this.stationData[j] =
-              this.stationData[j] + dashboard.downtimeDefect[i].downtime;
-            console.log(this.stationData);
+        // DOWNTIME----------------------------------------------------------
+        const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
+        this.station = s;
+        console.log("this.station", this.station);
+        this.stationData = Array(this.station.length).fill(0);
+        console.log(this.stationData);
+        for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
+          console.log(dashboard.downtimeDefect[i]);
+          for (let j = 0; j < this.station.length; j++) {
+            if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
+              this.stationData[j] =
+                this.stationData[j] + dashboard.downtimeDefect[i].downtime;
+              console.log(this.stationData);
+            }
           }
         }
-      }
+      this.setChart()
+        if (this.OEEOld !== this.OEE && this.availabilityOld !== this.availability && this.performanceOld !== this.performance && this.qualityOld !== this.quality) {
+          this.OEEOld == this.OEE
+          this.availabilityOld == this.availability
+          this.performanceOld == this.performance
+          this.qualityOld == this.quality
+
+          console.log("cgffd");
       // SCRAP----------------------------------------------------------
       this.scrapDefects = dashboard.failureDefect.filter(
         (defect) => defect.type === "SCRAP"
@@ -698,6 +731,10 @@ export default {
           }
         }
       }
+      // if (this.OEE == 0) {
+      //     this.stationData = Array(this.station.length).fill(0);
+      //   }
+      }
       this.loaded = true;
     } catch (e) {
       this.AA()
@@ -728,7 +765,7 @@ export default {
     },
     chartData1() {
       return {
-        labels: this.station.map((n) => `${n.stationId}`),
+        labels: this.stationForChart.map(station => station.stationId),
         datasets: [
           {
             label: "Downtime",
@@ -740,7 +777,7 @@ export default {
   },
     chartData2() {
       return {
-        labels: ["Inspection 1", "Inspection 2", "Q-Gate Inspection 3"],
+        labels: this.stationIns.map(station => station.stationName),
         datasets: [
           {
             label: "SCRAP",
