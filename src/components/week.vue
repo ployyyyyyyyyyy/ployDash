@@ -267,36 +267,55 @@
         </a>
       </div>
 
-      <div class="services-grid2"  v-if="type == '1' || type == '2'">
+      <div class="services-grid2" v-if="type == '1'">
         <div class="content-DG-item">
           <div>
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar v-if="loaded" :data="chartData1" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar v-if="loaded" :data="chartData2" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
         </div>
       </div>
-      <div class="services-grid3"  v-if="type == '3'">
+
+      <div class="services-grid3" v-if="type == '2'">
         <div class="content-DG-item">
           <div>
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar v-if="loaded" :data="chartData1" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar v-if="loaded" :data="chartData2" width="450" height="340" class="pa-4 "/>
+          <Bar :data="chartData3" width="450" height="340" class="pa-4 " />
+        </div>
+      </div>
+
+      <div class="services-grid4" v-if="type == '3'">
+        <div class="content-DG-item">
+          <div>
+            <h1>DOWNTIME</h1>
+          </div>
+          <div class="scale">min</div>
+          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+        </div>
+        <div class="content-SG-item">
+          <div>
+            <h1>DEFECT TYPE</h1>
+          </div>
+          <div class="scale">Frame</div>
+          <Bar :data="chartData4" width="450" height="340" class="pa-4 " />
+
         </div>
       </div>
 
@@ -374,12 +393,16 @@ export default {
     sumScrapIns1: null,
     sumScrapIns2: null,
     sumScrapIns3: null,
+    sumScrapIns4: null,
+    sumScrapIns5: null,
 
     repairDefects: [],
     sumRepairDefects: null,
     sumrepairIns1: null,
     sumrepairIns2: null,
     sumrepairIns3: null,
+    sumrepairIns4: null,
+    sumrepairIns5: null,
 
     reworkDefects: [],
     sumreworkDefects: null,
@@ -491,6 +514,14 @@ export default {
             this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
             // console.log("this.sumScrapIns3", this.sumScrapIns3);
           }
+          if (this.scrapDefects[i].station == "Inspection S") {
+            this.sumScrapIns4 = this.sumScrapIns4 + this.scrapDefects[i].sum;
+            // console.log("this.sumscrapIns1", this.sumscrapIns1);
+          }
+          if (this.scrapDefects[i].station == "Q-Gate Inspection 2") {
+            this.sumScrapIns5 = this.sumScrapIns5 + this.scrapDefects[i].sum;
+            // console.log("this.sumscrapIns1", this.sumscrapIns1);
+          }
         }
       }
       
@@ -514,6 +545,14 @@ export default {
           if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
             this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
             // console.log("this.sumrepairIns3", this.sumrepairIns3);
+          }
+          if (this.repairDefects[i].station == "Inspection S") {
+            this.sumrepairIns4 = this.sumrepairIns4 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns1", this.sumrepairIns1);
+          }
+          if (this.repairDefects[i].station == "Q-Gate Inspection 2") {
+            this.sumrepairIns5 = this.sumrepairIns5 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns1", this.sumrepairIns1);
           }
         }
       }
@@ -587,9 +626,13 @@ export default {
       this.sumScrapIns1 = 0;
       this.sumScrapIns2 = 0;
       this.sumScrapIns3 = 0;
+      this.sumScrapIns4 = 0;
+      this.sumScrapIns5 = 0;
       this.sumrepairIns1 = 0;
       this.sumrepairIns2 = 0;
       this.sumrepairIns3 = 0;
+      this.sumrepairIns4 = 0;
+      this.sumrepairIns5 = 0;
       this.sumreworkIns1 = 0;
       this.sumreworkIns2 = 0;
       this.sumreworkIns3 = 0;
@@ -681,6 +724,14 @@ export default {
             this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
             // console.log("this.sumScrapIns3", this.sumScrapIns3);
           }
+          if (this.scrapDefects[i].station == "Inspection S") {
+            this.sumScrapIns4 = this.sumScrapIns4 + this.scrapDefects[i].sum;
+            // console.log("this.sumscrapIns1", this.sumscrapIns1);
+          }
+          if (this.scrapDefects[i].station == "Q-Gate Inspection 2") {
+            this.sumScrapIns5 = this.sumScrapIns5 + this.scrapDefects[i].sum;
+            // console.log("this.sumscrapIns1", this.sumscrapIns1);
+          }
         }
       }
       
@@ -704,6 +755,14 @@ export default {
           if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
             this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
             // console.log("this.sumrepairIns3", this.sumrepairIns3);
+          }
+          if (this.repairDefects[i].station == "Inspection S") {
+            this.sumrepairIns4 = this.sumrepairIns4 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns1", this.sumrepairIns1);
+          }
+          if (this.repairDefects[i].station == "Q-Gate Inspection 2") {
+            this.sumrepairIns5 = this.sumrepairIns5 + this.repairDefects[i].sum;
+            // console.log("this.sumrepairIns1", this.sumrepairIns1);
           }
         }
       }
@@ -775,7 +834,7 @@ export default {
         ],
       };
   },
-    chartData2() {
+  chartData2() {
       return {
         labels: this.stationIns.map(station => station.stationName),
         datasets: [
@@ -789,9 +848,60 @@ export default {
             backgroundColor: "#FF7F00",
             data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
           },
+          // {
+          //   label: "REWORK",
+          //   backgroundColor: "#FFFF00",
+          //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+          // },
+        ],
+      };
+    },
+
+    chartData3() {
+      return {
+        labels: this.stationIns.map(station => station.stationName),
+        datasets: [
           {
-            label: "REWORK",
+            label: "SCRAP",
+            backgroundColor: "#FF0000",
+            data: [this.sumScrapIns4, this.sumScrapIns5],
+          },
+          {
+            label: "REPAIR",
+            backgroundColor: "#FF7F00",
+            data: [this.sumrepairIns4, this.sumrepairIns5],
+          },
+          // {
+          //   label: "REWORK",
+          //   backgroundColor: "#FFFF00",
+          //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+          // },
+        ],
+      };
+    },
+
+    chartData4() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "PS",
+            backgroundColor: "#FF0000",
+            data: [this.sumScrapIns1, this.sumScrapIns2, this.sumScrapIns3],
+          },
+          {
+            label: "RP",
+            backgroundColor: "#FF7F00",
+            data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
+          },
+          {
+            label: "RW",
             backgroundColor: "#FFFF00",
+            data: [this.sumScrapIns1, this.sumScrapIns2, this.sumScrapIns3],
+          },
+          {
+            label: "RT",
+            backgroundColor: "#FF69B4",
             data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
           },
         ],
@@ -901,7 +1011,7 @@ ul.BACK li a h2:hover {
 }
 
 .DATA-item {
-  transform: translatey(-323%);
+  transform: translatey(-345%);
   font-size: 28px;
   font-family: 'Sarabun', sans-serif;
 }
@@ -910,7 +1020,7 @@ ul.BACK li a h2:hover {
   margin-left: 20%;
 }
 
-ul.data-item li a h2 {
+ul.data-item  a h2 {
   font-family: 'Sarabun', sans-serif;
   font-size: 22px;
   color: black;
@@ -919,7 +1029,7 @@ ul.data-item li a h2 {
   transition: .3s ease-in-out;
 }
 
-ul.data-item li a h2 :hover {
+ul.data-item a h2 :hover {
   text-decoration: none;
   font-family: 'Sarabun', sans-serif;
   font-size: 20px;
@@ -951,7 +1061,7 @@ ul.Logout li a h2 {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(66px);
+  transform: translatey(50px);
   transition: .3s ease-in-out;
   margin-left: 40px;
 }
@@ -963,7 +1073,7 @@ ul.Logout li a h2:hover {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(66px);
+  transform: translatey(50px);
   margin-left: 40px;
 }
 
@@ -1014,7 +1124,7 @@ ul.Logout li a h2:hover {
 .v-select {
   font-size: 28px;
   font-family: 'Sarabun', sans-serif;
-  margin-top: -924px;
+  margin-top: -935px;
   color: black;
   transform: translatex(1575px);
 }
@@ -1080,7 +1190,16 @@ ul.content-APQ-item li a :hover {
   grid-template-columns: repeat(3, 620px);
   width: 500px;
   height: 400px;
-  margin-left: -3px;
+  margin-left: -620px;
+  margin-top: -1%;
+}
+
+.services-grid4 {
+  display: grid;
+  grid-template-columns: repeat(3, 620px);
+  width: 500px;
+  height: 400px;
+  margin-left: -4px;
   margin-top: -1%;
 }
 
