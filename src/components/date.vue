@@ -44,11 +44,11 @@
             <Datepicker v-model="date" :format="format" :enableTimePicker="false" @update:modelValue="update" />
           </h3>
           <router-link :to="/week/ + gettype()">
-              <h2 class="mb-6 text-black">WEEK</h2>
-            </router-link>
+            <h2 class="mb-6 text-black">WEEK</h2>
+          </router-link>
           <router-link :to="/month/ + gettype()">
-              <h2 class="mb-6 text-black">MONTH</h2>
-            </router-link>
+            <h2 class="mb-6 text-black">MONTH</h2>
+          </router-link>
         </ul>
       </div>
       <div class="Logout-item">
@@ -290,7 +290,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData1F" width="350" height="200" class="text-h6 pa-4 " />
           <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
@@ -298,7 +298,7 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData2" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData2" :options="options" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
       </div>
@@ -309,7 +309,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData1S" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
@@ -317,7 +317,7 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData3" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData3" :options="options2" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
       </div>
@@ -328,7 +328,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData1P" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
@@ -338,7 +338,6 @@
           <div class="scale">Frame</div>
           <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
-
         </div>
       </div>
 
@@ -448,6 +447,12 @@ export default {
     availabilityOld: 101,
     performanceOld: 101,
     qualityOld: 101,
+    options: {
+        barThickness: 30,
+      },
+    options2: {
+      barThickness: 40,
+      }
 
   }),
   async mounted() {
@@ -480,14 +485,24 @@ export default {
       this.type = dashboard.failureDefect.type;
       this.details = dashboard.failureDefect.details;
       this.sum = dashboard.failureDefect.sum;
-      //ตารางAvailability--------------------------------------------------
-      this.bottleneck = dashboard.downtimeDefect.filter(
-        (bottleneck) => bottleneck.station === "OP06"
-      );
-      //ตารางPerformance----------------------------------------------------
-      this.downtimenotBT = dashboard.downtimeDefect.filter(
-        (downtimenotBT) => downtimenotBT.station !== "OP06"
-      );
+      if (this.type == '1') {      //ตารางAvailability--------------------------------------------------
+        this.bottleneck = dashboard.downtimeDefect.filter(
+          (bottleneck) => bottleneck.station === "OPF06"
+        );
+        //ตารางPerformance----------------------------------------------------
+        this.downtimenotBT = dashboard.downtimeDefect.filter(
+          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+        );
+      }
+      if (this.type == '2') {      //ตารางAvailability--------------------------------------------------
+        this.bottleneck = dashboard.downtimeDefect.filter(
+          (bottleneck) => bottleneck.station === "OPF04"
+        );
+        //ตารางPerformance----------------------------------------------------
+        this.downtimenotBT = dashboard.downtimeDefect.filter(
+          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+        );
+      }
       // DOWNTIME----------------------------------------------------------
       const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
       // เอาข้อมูลมาเก็บ
@@ -608,6 +623,15 @@ export default {
       }
       this.loaded = true;
     } catch (e) {
+      const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
+      this.stationForChart = s;
+      this.stationData = Array(this.stationForChart.length).fill(0);
+      
+      this.stationIns = this.stationForChart.filter((e) => {
+        const re = new RegExp("inspection", "i");
+        return re.test(e.stationName);
+      });
+      this.AA()
       console.error(e);
     }
 
@@ -743,7 +767,7 @@ export default {
           }
         }
 
-        
+
         this.setChart()
         if (this.OEEOld !== this.OEE && this.availabilityOld !== this.availability && this.performanceOld !== this.performance && this.qualityOld !== this.quality) {
           this.OEEOld == this.OEE
@@ -754,97 +778,98 @@ export default {
           console.log("cgffd");
 
 
-        // SCRAP----------------------------------------------------------
-        this.scrapDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "SCRAP"
-        );
+          // SCRAP----------------------------------------------------------
+          this.scrapDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "SCRAP"
+          );
 
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
-            this.sumScrapDefects =
-              this.sumScrapDefects + this.scrapDefects[i].sum;
-            this.countScrapDefects = this.countScrapDefects + 1;
-            if (this.scrapDefects[i].station == "Inspection 1") {
-              this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
-              console.log("this.sumScrapIns1", this.sumScrapIns1);
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.scrapDefects[i] && this.scrapDefects[i].sum) {
+              this.sumScrapDefects =
+                this.sumScrapDefects + this.scrapDefects[i].sum;
+              this.countScrapDefects = this.countScrapDefects + 1;
+              if (this.scrapDefects[i].station == "Inspection 1") {
+                this.sumScrapIns1 = this.sumScrapIns1 + this.scrapDefects[i].sum;
+                console.log("this.sumScrapIns1", this.sumScrapIns1);
+              }
+              if (this.scrapDefects[i].station == "Inspection 2") {
+                this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
+                console.log("this.sumScrapIns2", this.sumScrapIns2);
+              }
+              if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
+                this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
+                console.log("this.sumScrapIns3", this.sumScrapIns3);
+              }
+              if (this.scrapDefects[i].station == "Inspection S") {
+                this.sumScrapIns4 = this.sumScrapIns4 + this.scrapDefects[i].sum;
+                // console.log("this.sumscrapIns1", this.sumscrapIns1);
+              }
+              if (this.scrapDefects[i].station == "Q-Gate Inspection 2") {
+                this.sumScrapIns5 = this.sumScrapIns5 + this.scrapDefects[i].sum;
+                // console.log("this.sumscrapIns1", this.sumscrapIns1);
+              }
             }
-            if (this.scrapDefects[i].station == "Inspection 2") {
-              this.sumScrapIns2 = this.sumScrapIns2 + this.scrapDefects[i].sum;
-              console.log("this.sumScrapIns2", this.sumScrapIns2);
-            }
-            if (this.scrapDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumScrapIns3 = this.sumScrapIns3 + this.scrapDefects[i].sum;
-              console.log("this.sumScrapIns3", this.sumScrapIns3);
-            }
-            if (this.scrapDefects[i].station == "Inspection S") {
-            this.sumScrapIns4 = this.sumScrapIns4 + this.scrapDefects[i].sum;
-            // console.log("this.sumscrapIns1", this.sumscrapIns1);
           }
-          if (this.scrapDefects[i].station == "Q-Gate Inspection 2") {
-            this.sumScrapIns5 = this.sumScrapIns5 + this.scrapDefects[i].sum;
-            // console.log("this.sumscrapIns1", this.sumscrapIns1);
+
+          // REPAIR----------------------------------------------------------
+          this.repairDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "REPAIR"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.repairDefects[i] && this.repairDefects[i].sum) {
+              this.sumrepairDefects =
+                this.sumrepairDefects + this.repairDefects[i].sum;
+              this.countrepairDefects = this.countrepairDefects + 1;
+              if (this.repairDefects[i].station == "Inspection 1") {
+                this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns1", this.sumrepairIns1);
+              }
+              if (this.repairDefects[i].station == "Inspection 2") {
+                this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns2", this.sumrepairIns2);
+              }
+              if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
+                this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns3", this.sumrepairIns3);
+              }
+              if (this.repairDefects[i].station == "Inspection S") {
+                this.sumrepairIns4 = this.sumrepairIns4 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns1", this.sumrepairIns1);
+              }
+              if (this.repairDefects[i].station == "Q-Gate Inspection 2") {
+                this.sumrepairIns5 = this.sumrepairIns5 + this.repairDefects[i].sum;
+                // console.log("this.sumrepairIns1", this.sumrepairIns1);
+              }
+            }
           }
+
+          // REWORK----------------------------------------------------------
+          this.reworkDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "REWORK"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
+              this.sumreworkDefects =
+                this.sumreworkDefects + this.reworkDefects[i].sum;
+              this.countreworkDefects = this.countreworkDefects + 1;
+              if (this.reworkDefects[i].station == "Inspection 1") {
+                this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
+                // console.log("this.sumreworkIns1", this.sumreworkIns1);
+              }
+              if (this.reworkDefects[i].station == "Inspection 2") {
+                this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
+                // console.log("this.sumreworkIns2", this.sumreworkIns2);
+              }
+              if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
+                this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
+                // console.log("this.sumreworkIns3", this.sumreworkIns3);
+              }
+            }
           }
         }
-
-        // REPAIR----------------------------------------------------------
-        this.repairDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "REPAIR"
-        );
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.repairDefects[i] && this.repairDefects[i].sum) {
-            this.sumrepairDefects =
-              this.sumrepairDefects + this.repairDefects[i].sum;
-            this.countrepairDefects = this.countrepairDefects + 1;
-            if (this.repairDefects[i].station == "Inspection 1") {
-              this.sumrepairIns1 = this.sumrepairIns1 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns1", this.sumrepairIns1);
-            }
-            if (this.repairDefects[i].station == "Inspection 2") {
-              this.sumrepairIns2 = this.sumrepairIns2 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns2", this.sumrepairIns2);
-            }
-            if (this.repairDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumrepairIns3 = this.sumrepairIns3 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns3", this.sumrepairIns3);
-            }
-            if (this.repairDefects[i].station == "Inspection S") {
-              this.sumrepairIns4 = this.sumrepairIns4 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns1", this.sumrepairIns1);
-            }
-            if (this.repairDefects[i].station == "Q-Gate Inspection 2") {
-              this.sumrepairIns5 = this.sumrepairIns5 + this.repairDefects[i].sum;
-              // console.log("this.sumrepairIns1", this.sumrepairIns1);
-            }
-          }
-        }
-
-        // REWORK----------------------------------------------------------
-        this.reworkDefects = dashboard.failureDefect.filter(
-          (defect) => defect.type === "REWORK"
-        );
-        for (let i = 0; i < dashboard.failureTotal; i++) {
-          if (this.reworkDefects[i] && this.reworkDefects[i].sum) {
-            this.sumreworkDefects =
-              this.sumreworkDefects + this.reworkDefects[i].sum;
-            this.countreworkDefects = this.countreworkDefects + 1;
-            if (this.reworkDefects[i].station == "Inspection 1") {
-              this.sumreworkIns1 = this.sumreworkIns1 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns1", this.sumreworkIns1);
-            }
-            if (this.reworkDefects[i].station == "Inspection 2") {
-              this.sumreworkIns2 = this.sumreworkIns2 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns2", this.sumreworkIns2);
-            }
-            if (this.reworkDefects[i].station == "Q-Gate Inspection 3") {
-              this.sumreworkIns3 = this.sumreworkIns3 + this.reworkDefects[i].sum;
-              // console.log("this.sumreworkIns3", this.sumreworkIns3);
-            }
-          }
-        }
-      }
-      this.loaded = true;
+        this.loaded = true;
       } catch (e) {
+
         this.AA()
         console.error(e);
       }
@@ -871,23 +896,62 @@ export default {
     type() {
       return this.$route.params.type;
     },
-    chartData1() {
+    chartData1F() {
       return {
         labels: this.stationForChart.map(station => station.stationId),
         datasets: [
           {
-            label: "Downtime",
+            label: "Downtime that affects Performance",
             backgroundColor: [              
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
-              'rgba(255, 0, 0, 1)',
+              'RGBA( 153, 50, 204, 1 )',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)'],
+            data: this.stationData,
+          },
+          {
+            label: "Downtime that affects Availability",
+            backgroundColor:"RGBA( 153, 50, 204, 1 )",
+            data: [],
+          },
+        ],
+      };
+    },
+    chartData1S() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "Downtime that affects Performance",
+            backgroundColor: [              
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'RGBA( 153, 50, 204, 1 )',
+              'rgba(0, 0, 139, 1)',],
+            data: this.stationData,
+          },
+          {
+            label: "Downtime that affects Availability",
+            backgroundColor:"RGBA( 153, 50, 204, 1 )",
+            data: [],
+          },
+        ],
+      };
+    },
+    chartData1P() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "Downtime",
+            backgroundColor: "rgba(0, 0, 139, 1)",
             data: this.stationData,
           },
         ],
@@ -941,7 +1005,7 @@ export default {
 
     chartData4() {
       return {
-        labels: this.stationForChart.map(station => station.stationId),
+        labels: this.stationIns.map(station => station.stationName),
         datasets: [
           {
             label: "PS",
@@ -973,7 +1037,7 @@ export default {
 
 <style scoped>
 .container {
-  width: 2024px;
+  width: 1900px;
   height: 1024px;
   margin: 0 auto;
   background: white;
@@ -988,7 +1052,7 @@ header {
   background: #FF971E;
   margin: 0 auto;
   margin-top: 10px;
-  transform: translatex(770px);
+  transform: translatex(720px);
   font-family: 'Sarabun', sans-serif;
   font-size: 20px;
 }
@@ -1064,7 +1128,7 @@ ul.BACK li a h2:hover {
   border-radius: 15px;
   justify-items: center;
   margin-top: 127%;
-  transform: translatex(608%);
+  transform: translatex(589%);
   font-family: 'Sarabun', sans-serif;
   font-size: 20;
 }
@@ -1145,13 +1209,13 @@ ul.Logout li a h2:hover {
   grid-template-columns: repeat(3, 620px);
   width: 500px;
   height: 400px;
-  margin-left: 400px;
-  margin-top: -46%;
+  margin-left: 350px;
+  margin-top: -49%;
 }
 
 .content-OEE-item h2 {
   background: #D9D9D9;
-  width: 570px;
+  width: 1000px;
   height: 400px;
   padding: 10px;
   border-radius: 20px;
@@ -1162,7 +1226,8 @@ ul.Logout li a h2:hover {
 
 .content-OEE-item h2 {
   font-size: 32px;
-  text-align: center;
+  text-align: justify;
+  padding-left: 250px;
   font-family: 'Sarabun', sans-serif;
 }
 
@@ -1186,11 +1251,11 @@ ul.Logout li a h2:hover {
   font-family: 'Sarabun', sans-serif;
   margin-top: -950px;
   color: black;
-  transform: translatex(1620px);
+  transform: translatex(1575px);
 }
 
 .content-APQ-item {
-  background: #F2F2F2;
+  background: #D9D9D9;
   width: 570px;
   height: 400px;
   padding: 10px;
@@ -1293,7 +1358,7 @@ ul.content-APQ-item li a :hover {
 .content-SG-item {
   background: #F2F2F2;
   width: 570px;
-  height:440px;
+  height: 440px;
   border-radius: 20px;
 }
 
@@ -1430,4 +1495,5 @@ a h3 {
   position: fixed;
   border-radius: 10%;
   box-shadow: 0 0 8px orangered;
-}</style>
+}
+</style>

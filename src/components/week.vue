@@ -274,7 +274,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData1F" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
@@ -282,7 +282,7 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData2" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData2" :options="options" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
       </div>
@@ -293,7 +293,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData1S" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
@@ -301,7 +301,7 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData3" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData3" :options="options2" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
       </div>
@@ -312,7 +312,7 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData1P" width="350" height="200" class="pa-4 " />
           <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
@@ -424,6 +424,12 @@ export default {
     availability: 101,
     performance: 101,
     quality: 101,
+    options: {
+        barThickness: 30,
+      },
+    options2: {
+      barThickness: 40,
+      },
 
     loaded: false,
   }),
@@ -832,23 +838,62 @@ export default {
     type() {
       return this.$route.params.type;
     },
-    chartData1() {
+    chartData1F() {
       return {
         labels: this.stationForChart.map(station => station.stationId),
         datasets: [
           {
-            label: "Downtime",
+            label: "Downtime that affects Performance",
             backgroundColor: [              
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
-              'rgba(255, 0, 0, 1)',
+              'RGBA( 153, 50, 204, 1 )',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)'],
+            data: this.stationData,
+          },
+          {
+            label: "Downtime that affects Availability",
+            backgroundColor:"RGBA( 153, 50, 204, 1 )",
+            data: [],
+          },
+        ],
+      };
+    },
+    chartData1S() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "Downtime that affects Performance",
+            backgroundColor: [              
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'RGBA( 153, 50, 204, 1 )',
+              'rgba(0, 0, 139, 1)',],
+            data: this.stationData,
+          },
+          {
+            label: "Downtime that affects Availability",
+            backgroundColor:"RGBA( 153, 50, 204, 1 )",
+            data: [],
+          },
+        ],
+      };
+    },
+    chartData1P() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "Downtime",
+            backgroundColor: "rgba(0, 0, 139, 1)",
             data: this.stationData,
           },
         ],
@@ -902,7 +947,7 @@ export default {
 
     chartData4() {
       return {
-        labels: this.stationForChart.map(station => station.stationId),
+        labels: this.stationIns.map(station => station.stationName),
         datasets: [
           {
             label: "PS",
@@ -1111,7 +1156,7 @@ ul.Logout li a h2:hover {
 
 .content-OEE-item h2 {
   background: #D9D9D9;
-  width: 570px;
+  width: 1000px;
   height: 400px;
   padding: 10px;
   border-radius: 20px;
@@ -1122,7 +1167,8 @@ ul.Logout li a h2:hover {
 
 .content-OEE-item h2 {
   font-size: 32px;
-  text-align: center;
+  text-align: justify;
+  padding-left: 250px;
   font-family: 'Sarabun', sans-serif;
 }
 
@@ -1150,7 +1196,7 @@ ul.Logout li a h2:hover {
 }
 
 .content-APQ-item {
-  background: #F2F2F2;
+  background: #D9D9D9;
   width: 570px;
   height: 400px;
   padding: 10px;

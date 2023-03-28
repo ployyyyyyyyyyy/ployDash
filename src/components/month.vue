@@ -273,14 +273,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1F" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData2" :options="options" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
       </div>
 
@@ -290,14 +292,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1S" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData3" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData3" :options="options2" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
       </div>
 
@@ -307,14 +311,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1P" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData4" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
 
         </div>
       </div>
@@ -416,7 +422,12 @@ export default {
     availabilityOld: 101,
     performanceOld: 101,
     qualityOld: 101,
-
+    options: {
+        barThickness: 30,
+      },
+    options2: {
+      barThickness: 40,
+      }
   }),
   async mounted() {
     console.log(this.type);
@@ -833,23 +844,62 @@ export default {
     type() {
       return this.$route.params.type;
     },
-    chartData1() {
+    chartData1F() {
       return {
         labels: this.stationForChart.map(station => station.stationId),
         datasets: [
           {
-            label: "Downtime",
+            label: "Downtime that affects Performance",
             backgroundColor: [              
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
-              'rgba(255, 0, 0, 1)',
+              'RGBA( 153, 50, 204, 1 )',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)',
               'rgba(0, 0, 139, 1)'],
+            data: this.stationData,
+          },
+          {
+            label: "Downtime that affects Availability",
+            backgroundColor:"RGBA( 153, 50, 204, 1 )",
+            data: [],
+          },
+        ],
+      };
+    },
+    chartData1S() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "Downtime that affects Performance",
+            backgroundColor: [              
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'RGBA( 153, 50, 204, 1 )',
+              'rgba(0, 0, 139, 1)',],
+            data: this.stationData,
+          },
+          {
+            label: "Downtime that affects Availability",
+            backgroundColor:"RGBA( 153, 50, 204, 1 )",
+            data: [],
+          },
+        ],
+      };
+    },
+    chartData1P() {
+      return {
+        labels: this.stationForChart.map(station => station.stationId),
+        datasets: [
+          {
+            label: "Downtime",
+            backgroundColor: "rgba(0, 0, 139, 1)",
             data: this.stationData,
           },
         ],
@@ -875,6 +925,10 @@ export default {
           //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
           // },
         ],
+            responsive: true,
+            maintainAspectRatio: false,
+            barThickness: 5, // กำหนดความหนาของแท่ง Bar
+            categoryPercentage: 0 // กำหนดความกว้างของแต่ละแท่ง Bar
       };
     },
 
@@ -903,7 +957,7 @@ export default {
 
     chartData4() {
       return {
-        labels: this.stationForChart.map(station => station.stationId),
+        labels: this.stationIns.map(station => station.stationName),
         datasets: [
           {
             label: "PS",
@@ -1083,7 +1137,7 @@ ul.Logout li a h2 {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(50px);
+  transform: translatey(-10px);
   transition: .3s ease-in-out;
   margin-left: 40px;
 }
@@ -1095,7 +1149,7 @@ ul.Logout li a h2:hover {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(50px);
+  transform: translatey(-10px);
   margin-left: 40px;
 }
 
@@ -1113,7 +1167,7 @@ ul.Logout li a h2:hover {
 
 .content-OEE-item h2 {
   background: #D9D9D9;
-  width: 570px;
+  width: 1000px;
   height: 400px;
   padding: 10px;
   border-radius: 20px;
@@ -1124,7 +1178,8 @@ ul.Logout li a h2:hover {
 
 .content-OEE-item h2 {
   font-size: 32px;
-  text-align: center;
+  text-align: justify;
+  padding-left: 250px;
   font-family: 'Sarabun', sans-serif;
 }
 
@@ -1152,7 +1207,7 @@ ul.Logout li a h2:hover {
 }
 
 .content-APQ-item {
-  background: #F2F2F2;
+  background: #D9D9D9;
   width: 570px;
   height: 400px;
   padding: 10px;
@@ -1228,7 +1283,7 @@ ul.content-APQ-item li a :hover {
 .content-DG-item {
   background: #F2F2F2;
   width: 570px;
-  height: 510px;
+  height: 440px;
   border-radius: 20px;
 }
 
@@ -1246,11 +1301,15 @@ ul.content-APQ-item li a :hover {
   margin-left: 20px;
 }
 
-
+.scale2 {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 250px;
+}
 .content-SG-item {
   background: #F2F2F2;
   width: 570px;
-  height: 510px;
+  height: 440px;
   border-radius: 20px;
 }
 
