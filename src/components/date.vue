@@ -494,7 +494,7 @@ export default {
           (downtimenotBT) => downtimenotBT.station !== "OPF06"
         );
       }
-      if (this.type == '2') {      //ตารางAvailability--------------------------------------------------
+      if (parseInt(this.type) == '2') {      //ตารางAvailability--------------------------------------------------
         this.bottleneck = dashboard.downtimeDefect.filter(
           (bottleneck) => bottleneck.station === "OPF04"
         );
