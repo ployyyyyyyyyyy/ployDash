@@ -839,7 +839,17 @@ export default {
         datasets: [
           {
             label: "Downtime",
-            backgroundColor: "#00148E",
+            backgroundColor: [              
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(255, 0, 0, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)'],
             data: this.stationData,
           },
         ],

@@ -290,14 +290,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData2" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
       </div>
 
@@ -307,14 +309,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData3" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData3" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
       </div>
 
@@ -324,14 +328,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData4" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
 
         </div>
       </div>
@@ -651,6 +657,10 @@ export default {
       this.sumreworkIns1 = 0;
       this.sumreworkIns2 = 0;
       this.sumreworkIns3 = 0;
+      this.sumScrapIns4 = 0;
+      this.sumScrapIns5 = 0;
+      this.sumrepairIns4 = 0;
+      this.sumrepairIns5 = 0;
       this.stationData = 0;
 
     },
@@ -867,7 +877,17 @@ export default {
         datasets: [
           {
             label: "Downtime",
-            backgroundColor: "#00148E",
+            backgroundColor: [              
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(255, 0, 0, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)'],
             data: this.stationData,
           },
         ],
@@ -953,7 +973,7 @@ export default {
 
 <style scoped>
 .container {
-  width: 1900px;
+  width: 2024px;
   height: 1024px;
   margin: 0 auto;
   background: white;
@@ -968,7 +988,7 @@ header {
   background: #FF971E;
   margin: 0 auto;
   margin-top: 10px;
-  transform: translatex(720px);
+  transform: translatex(770px);
   font-family: 'Sarabun', sans-serif;
   font-size: 20px;
 }
@@ -1044,7 +1064,7 @@ ul.BACK li a h2:hover {
   border-radius: 15px;
   justify-items: center;
   margin-top: 127%;
-  transform: translatex(589%);
+  transform: translatex(608%);
   font-family: 'Sarabun', sans-serif;
   font-size: 20;
 }
@@ -1101,7 +1121,7 @@ ul.Logout li a h2 {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(35px);
+  transform: translatey(-25px);
   transition: .3s ease-in-out;
   margin-left: 40px;
 }
@@ -1113,7 +1133,7 @@ ul.Logout li a h2:hover {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(35px);
+  transform: translatey(-25px);
   margin-left: 40px;
 }
 
@@ -1125,8 +1145,8 @@ ul.Logout li a h2:hover {
   grid-template-columns: repeat(3, 620px);
   width: 500px;
   height: 400px;
-  margin-left: 350px;
-  margin-top: -49%;
+  margin-left: 400px;
+  margin-top: -46%;
 }
 
 .content-OEE-item h2 {
@@ -1166,7 +1186,7 @@ ul.Logout li a h2:hover {
   font-family: 'Sarabun', sans-serif;
   margin-top: -950px;
   color: black;
-  transform: translatex(1575px);
+  transform: translatex(1620px);
 }
 
 .content-APQ-item {
@@ -1246,7 +1266,7 @@ ul.content-APQ-item li a :hover {
 .content-DG-item {
   background: #F2F2F2;
   width: 570px;
-  height: 510px;
+  height: 440px;
   border-radius: 20px;
 }
 
@@ -1264,11 +1284,16 @@ ul.content-APQ-item li a :hover {
   margin-left: 20px;
 }
 
+.scale2 {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 250px;
+}
 
 .content-SG-item {
   background: #F2F2F2;
   width: 570px;
-  height: 510px;
+  height:440px;
   border-radius: 20px;
 }
 
@@ -1283,7 +1308,7 @@ ul.content-APQ-item li a :hover {
 .content-group-item1 {
   background: #D9D9D9;
   width: 270px;
-  height: 130px;
+  height: 100px;
   padding: 10px;
   border-radius: 20px;
   text-align: center;
@@ -1306,7 +1331,7 @@ a h3 {
 .content-group-item2 {
   background: #D9D9D9;
   width: 270px;
-  height: 130px;
+  height: 100px;
   padding: 10px;
   border-radius: 20px;
   text-align: center;
@@ -1329,12 +1354,12 @@ a h3 {
 .content-group-item3 {
   background: #D9D9D9;
   width: 270px;
-  height: 130px;
+  height: 100px;
   padding: 10px;
   border-radius: 20px;
   text-align: center;
   font-family: 'Sarabun', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   margin-top: 35%;
   transform: translatex(460%);
 }
@@ -1343,7 +1368,7 @@ a h3 {
   background: white;
   color: black;
   width: 193px;
-  height: 50px;
+  height: 35px;
   justify-items: center;
   text-align: center;
   transform: translatex(25px);
@@ -1352,13 +1377,13 @@ a h3 {
 .content-BT-item {
   background: #D9D9D9;
   width: 270px;
-  height: 130px;
+  height: 100px;
   padding: 10px;
   border-radius: 20px;
   text-align: center;
   font-family: 'Sarabun', sans-serif;
   font-size: 16px;
-  margin-top: 58%;
+  margin-top: 53%;
   transform: translatex(460%);
 }
 
@@ -1366,13 +1391,13 @@ a h3 {
   background: white;
   color: black;
   width: 193px;
-  height: 50px;
+  height: 35px;
   justify-items: center;
   text-align: center;
   transform: translatex(25px);
   font-family: 'Sarabun', sans-serif;
-  font-size: 28px;
-  padding-top: 5px;
+  font-size: 24px;
+  padding-top: 3px;
 }
 
 .v-card-text-1 content-downtime-item {

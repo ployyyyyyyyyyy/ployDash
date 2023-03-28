@@ -26,7 +26,7 @@ export default {
 <style scoped>
 .Main {
   width: 1900px;
-  height: 824px;
+  height: 900px;
   margin: 0 auto;
   background-color: #D9D9D9;
 }

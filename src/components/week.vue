@@ -274,14 +274,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData2" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData2" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
       </div>
 
@@ -291,14 +293,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData3" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData3" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
       </div>
 
@@ -308,14 +312,16 @@
             <h1>DOWNTIME</h1>
           </div>
           <div class="scale">min</div>
-          <Bar :data="chartData1" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData1" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
         </div>
         <div class="content-SG-item">
           <div>
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData4" width="450" height="340" class="pa-4 " />
+          <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
+          <div class="scale2">station</div>
 
         </div>
       </div>
@@ -832,7 +838,17 @@ export default {
         datasets: [
           {
             label: "Downtime",
-            backgroundColor: "#00148E",
+            backgroundColor: [              
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(255, 0, 0, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)',
+              'rgba(0, 0, 139, 1)'],
             data: this.stationData,
           },
         ],
@@ -1065,7 +1081,7 @@ ul.Logout li a h2 {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(50px);
+  transform: translatey(-10px);
   transition: .3s ease-in-out;
   margin-left: 40px;
 }
@@ -1077,7 +1093,7 @@ ul.Logout li a h2:hover {
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  transform: translatey(50px);
+  transform: translatey(-10px);
   margin-left: 40px;
 }
 
@@ -1210,7 +1226,7 @@ ul.content-APQ-item li a :hover {
 .content-DG-item {
   background: #F2F2F2;
   width: 570px;
-  height: 510px;
+  height: 440px;
   border-radius: 20px;
 }
 
@@ -1228,11 +1244,15 @@ ul.content-APQ-item li a :hover {
   margin-left: 20px;
 }
 
-
+.scale2 {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 250px;
+}
 .content-SG-item {
   background: #F2F2F2;
   width: 570px;
-  height: 510px;
+  height: 440px;
   border-radius: 20px;
 }
 
@@ -1241,6 +1261,7 @@ ul.content-APQ-item li a :hover {
   text-align: center;
   font-family: 'Sarabun', sans-serif;
   font-size: 25px;
+  color: black;
 
 }
 
