@@ -473,19 +473,50 @@ export default {
       this.details = dashboard.failureDefect.details;
       this.station = dashboard.failureDefect.station;
       this.sum = dashboard.failureDefect.sum;
-      //ตารางAvailability--------------------------------------------------
-      this.bottleneck = dashboard.downtimeDefect.filter(
-        (bottleneck) => bottleneck.station === "OP06"
-      );
-      //ตารางPerformance----------------------------------------------------
-      this.downtimenotBT = dashboard.downtimeDefect.filter(
-        (downtimenotBT) => downtimenotBT.station !== "OP06"
-      );
+       //ตารางAvailability F--------------------------------------------------
+        
+       if (parseInt(this.type) == 1) { 
+        this.bottleneck = dashboard.downtimeDefect.filter(
+          (bottleneck) => bottleneck.station === "OPF06"
+        );
+        //ตารางPerformance F----------------------------------------------------
+        this.downtimenotBT = dashboard.downtimeDefect.filter(
+          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+        );
+      }
+        //ตารางAvailability S--------------------------------------------------
+        if (parseInt(this.type) == 2) {
+          this.bottleneck = dashboard.downtimeDefect.filter(
+          (bottleneck) => bottleneck.station === "OPS04"
+        );
+        //ตารางPerformance S----------------------------------------------------
+        this.downtimenotBT = dashboard.downtimeDefect.filter(
+          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+        );
+      }
+
+      //ตารางAvailability P--------------------------------------------------
+      if (parseInt(this.type) == 3) {
+        this.bottleneck = this.downtimeDefect
+        //ตารางPerformance P----------------------------------------------------
+        this.downtimenotBT = this.downtimeDefect
+      }
+
       // DOWNTIME----------------------------------------------------------
       const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
-      // เอาข้อมูลมาเก็บ
+        if (parseInt(this.type) == 3) {
+          this.stationForChart = s.filter(
+            (item) => !item.stationName.includes("Inspection")
+          );
+        }
+        if (
+          parseInt(this.type) == 1 ||
+          parseInt(this.type) == 2
+        ) {
+          this.stationForChart = s;
+        }
       this.station = s;
-      this.stationForChart = s;
+      
       console.log(this.station);
       //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
       this.stationData = Array(this.station.length).fill(0);
@@ -687,16 +718,48 @@ export default {
         this.details = dashboard.failureDefect.details;
         this.station = dashboard.failureDefect.station;
         this.sum = dashboard.failureDefect.sum;
-        //ตารางAvailability--------------------------------------------------
+       //ตารางAvailability F--------------------------------------------------
+        
+       if (parseInt(this.type) == 1) { 
         this.bottleneck = dashboard.downtimeDefect.filter(
           (bottleneck) => bottleneck.station === "OPF06"
         );
-        //ตารางPerformance----------------------------------------------------
+        //ตารางPerformance F----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
           (downtimenotBT) => downtimenotBT.station !== "OPF06"
         );
+      }
+        //ตารางAvailability S--------------------------------------------------
+        if (parseInt(this.type) == 2) {
+          this.bottleneck = dashboard.downtimeDefect.filter(
+          (bottleneck) => bottleneck.station === "OPS04"
+        );
+        //ตารางPerformance S----------------------------------------------------
+        this.downtimenotBT = dashboard.downtimeDefect.filter(
+          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+        );
+      }
+
+        //ตารางAvailability P--------------------------------------------------
+        if (parseInt(this.type) == 3) {
+          this.bottleneck = this.downtimeDefect
+          //ตารางPerformance P----------------------------------------------------
+          this.downtimenotBT = this.downtimeDefect
+        }
+        
         // DOWNTIME----------------------------------------------------------
         const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
+        if (parseInt(this.type) == 3) {
+          this.stationForChart = s.filter(
+            (item) => !item.stationName.includes("Inspection")
+          );
+        }
+        if (
+          parseInt(this.type) == 1 ||
+          parseInt(this.type) == 2
+        ) {
+          this.stationForChart = s;
+        }
         this.station = s;
         console.log("this.station", this.station);
         this.stationData = Array(this.station.length).fill(0);
