@@ -74,7 +74,7 @@
         <div class="text-center">
           <v-progress-circular :rotate="360" :size="320" :width="60" :model-value="OEE"
             :color="this.OEE < 75 ? '#F9370C' : '#4CAF50'">
-            <strong>{{ Math.ceil(OEE) }}%</strong>
+            <strong>{{ OEE }}%</strong>
           </v-progress-circular>
 
         </div>
