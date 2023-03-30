@@ -1282,6 +1282,14 @@ ul.Logout li a h2:hover {
 
 }
 
+ul.content-APQ-item li a {
+  color: black;
+  transition: .3s ease-in-out;
+}
+
+ul.content-APQ-item li a :hover {
+  color: blue;
+}
 
 .content-COUNT-item h2 {
   font-size: 25px;
@@ -1404,22 +1412,36 @@ a h3 {
   padding-top: 5px;
 }
 
+
+.v-card-text-1 content-downtime-item {
+  font-size: 20px;
+  font-family: 'Sarabun', sans-serif;
+  text-align: center;
+  transform: translatex(1230px);
+  color: black;
+}
+
 .v-table {
   padding-left: 5%;
   padding-right: 5%;
 
 }
-.v-card {
+
+.v-card--reveal {
   z-index: 1;
   padding-top: 2%;
   height: 450px;
   justify-content: center;
-  top: -370px;
-  transform: translateX(-400px);
+  top: 250px;
+  left: 250px;
+  width: 550px;
+  background-color: #282724;
+  color: #D9D9D9;
+  flood-opacity: 100%;
+  transform: translateX(400px);
   position: fixed;
   border-radius: 10%;
   box-shadow: 0 0 8px orangered;
 }
-
 </style>
   
