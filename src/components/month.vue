@@ -417,6 +417,26 @@ export default {
     sumreworkIns2: null,
     sumreworkIns3: null,
 
+    RTDefects: [],
+    sumRTDefects: null,
+    sumRTIns3: null,
+    sumRTIns4: null,
+
+    RPDefects: [],
+    sumRPDefects: null,
+    sumRPIns3: null,
+    sumRPIns4: null,
+
+    RWDefects: [],
+    sumRWDefects: null,
+    sumRWIns3: null,
+    sumRWIns4: null,
+
+    PSDefects: [],
+    sumPSDefects: null,
+    sumPSIns3: null,
+    sumPSIns4: null,
+
     loaded: false,
     OEEOld: 101,
     availabilityOld: 101,
@@ -618,6 +638,87 @@ export default {
           }
         }
       }
+
+            // RT----------------------------------------------------------
+            this.RTDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "RT"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.RTDefects[i] && this.RTDefects[i].sum) {
+          this.sumRTDefects =
+            this.sumRTDefects + this.RTDefects[i].sum;
+          this.countRTDefects = this.countRTDefects + 1;
+          if (this.RTDefects[i].station == "Inspection 3") {
+            this.sumRTIns3 = this.sumRTIns3 + this.RTDefects[i].sum;
+            // console.log("this.sumRTIns3", this.sumRTIns3);
+          }
+          if (this.RTDefects[i].station == "Inspection 4") {
+            this.sumRTIns4 = this.sumRTIns4 + this.RTDefects[i].sum;
+            // console.log("this.sumRTIns4", this.sumRTIns4);
+          }
+        }
+      }
+
+      // RP----------------------------------------------------------
+      this.RPDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "RP"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.RPDefects[i] && this.RPDefects[i].sum) {
+          this.sumRPDefects =
+            this.sumRPDefects + this.RPDefects[i].sum;
+          this.countRPDefects = this.countRPDefects + 1;
+          if (this.RPDefects[i].station == "Inspection 3") {
+            this.sumRPIns3 = this.sumRPIns3 + this.RPDefects[i].sum;
+            // console.log("this.sumRPIns3", this.sumRPIns3);
+          }
+          if (this.RPDefects[i].station == "Inspection 4") {
+            this.sumRPIns4 = this.sumRPIns4 + this.RPDefects[i].sum;
+            // console.log("this.sumRPIns4", this.sumRPIns4);
+          }
+        }
+      }
+
+      // RW----------------------------------------------------------
+      this.RWDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "RW"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.RWDefects[i] && this.RWDefects[i].sum) {
+          this.sumRWDefects =
+            this.sumRWDefects + this.RWDefects[i].sum;
+          this.countRWDefects = this.countRWDefects + 1;
+          if (this.RWDefects[i].station == "Inspection 3") {
+            this.sumRWIns3 = this.sumRWIns3 + this.RWDefects[i].sum;
+            // console.log("this.sumRWIns3", this.sumRWIns3);
+          }
+          if (this.RWDefects[i].station == "Inspection 4") {
+            this.sumRWIns4 = this.sumRWIns4 + this.RWDefects[i].sum;
+            // console.log("this.sumRWIns4", this.sumRWIns4);
+          }
+        }
+      }
+
+      // PS----------------------------------------------------------
+      this.PSDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "PS"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.PSDefects[i] && this.PSDefects[i].sum) {
+          this.sumPSDefects =
+            this.sumPSDefects + this.PSDefects[i].sum;
+          this.countPSDefects = this.countPSDefects + 1;
+          if (this.PSDefects[i].station == "Inspection 3") {
+            this.sumPSIns3 = this.sumPSIns3 + this.PSDefects[i].sum;
+            // console.log("this.sumPSIns3", this.sumPSIns3);
+          }
+          if (this.PSDefects[i].station == "Inspection 4") {
+            this.sumPSIns4 = this.sumPSIns4 + this.PSDefects[i].sum;
+            // console.log("this.sumPSIns4", this.sumPSIns4);
+          }
+        }
+      }
+
       this.loaded = true;
     } catch (e) {
       console.error(e);
@@ -668,6 +769,14 @@ export default {
       this.sumreworkIns1 = 0;
       this.sumreworkIns2 = 0;
       this.sumreworkIns3 = 0;
+      this.sumRTIns3 = 0;
+      this.sumRTIns4 = 0;
+      this.sumRPIns3 = 0;
+      this.sumRPIns4 = 0;
+      this.sumRWIns3 = 0;
+      this.sumRWIns4 = 0;
+      this.sumPSIns3 = 0;
+      this.sumPSIns4 = 0;
     },
     setChart() {
       this.sumScrapIns1 = 0;
@@ -683,6 +792,14 @@ export default {
       this.sumreworkIns1 = 0;
       this.sumreworkIns2 = 0;
       this.sumreworkIns3 = 0;
+      this.sumRTIns3 = 0;
+      this.sumRTIns4 = 0;
+      this.sumRPIns3 = 0;
+      this.sumRPIns4 = 0;
+      this.sumRWIns3 = 0;
+      this.sumRWIns4 = 0;
+      this.sumPSIns3 = 0;
+      this.sumPSIns4 = 0;
     },
     gettype() {
       return this.type;
@@ -874,6 +991,87 @@ export default {
               }
             }
           }
+
+          // RT----------------------------------------------------------
+      this.RTDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "RT"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.RTDefects[i] && this.RTDefects[i].sum) {
+          this.sumRTDefects =
+            this.sumRTDefects + this.RTDefects[i].sum;
+          this.countRTDefects = this.countRTDefects + 1;
+          if (this.RTDefects[i].station == "Inspection 3") {
+            this.sumRTIns3 = this.sumRTIns3 + this.RTDefects[i].sum;
+            // console.log("this.sumRTIns3", this.sumRTIns3);
+          }
+          if (this.RTDefects[i].station == "Inspection 4") {
+            this.sumRTIns4 = this.sumRTIns4 + this.RTDefects[i].sum;
+            // console.log("this.sumRTIns4", this.sumRTIns4);
+          }
+        }
+      }
+
+      // RP----------------------------------------------------------
+      this.RPDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "RP"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.RPDefects[i] && this.RPDefects[i].sum) {
+          this.sumRPDefects =
+            this.sumRPDefects + this.RPDefects[i].sum;
+          this.countRPDefects = this.countRPDefects + 1;
+          if (this.RPDefects[i].station == "Inspection 3") {
+            this.sumRPIns3 = this.sumRPIns3 + this.RPDefects[i].sum;
+            // console.log("this.sumRPIns3", this.sumRPIns3);
+          }
+          if (this.RPDefects[i].station == "Inspection 4") {
+            this.sumRPIns4 = this.sumRPIns4 + this.RPDefects[i].sum;
+            // console.log("this.sumRPIns4", this.sumRPIns4);
+          }
+        }
+      }
+
+      // RW----------------------------------------------------------
+      this.RWDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "RW"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.RWDefects[i] && this.RWDefects[i].sum) {
+          this.sumRWDefects =
+            this.sumRWDefects + this.RWDefects[i].sum;
+          this.countRWDefects = this.countRWDefects + 1;
+          if (this.RWDefects[i].station == "Inspection 3") {
+            this.sumRWIns3 = this.sumRWIns3 + this.RWDefects[i].sum;
+            // console.log("this.sumRWIns3", this.sumRWIns3);
+          }
+          if (this.RWDefects[i].station == "Inspection 4") {
+            this.sumRWIns4 = this.sumRWIns4 + this.RWDefects[i].sum;
+            // console.log("this.sumRWIns4", this.sumRWIns4);
+          }
+        }
+      }
+
+      // PS----------------------------------------------------------
+      this.PSDefects = dashboard.failureDefect.filter(
+        (defect) => defect.type === "PS"
+      );
+      for (let i = 0; i < dashboard.failureTotal; i++) {
+        if (this.PSDefects[i] && this.PSDefects[i].sum) {
+          this.sumPSDefects =
+            this.sumPSDefects + this.PSDefects[i].sum;
+          this.countPSDefects = this.countPSDefects + 1;
+          if (this.PSDefects[i].station == "Inspection 3") {
+            this.sumPSIns3 = this.sumPSIns3 + this.PSDefects[i].sum;
+            // console.log("this.sumPSIns3", this.sumPSIns3);
+          }
+          if (this.PSDefects[i].station == "Inspection 4") {
+            this.sumPSIns4 = this.sumPSIns4 + this.PSDefects[i].sum;
+            // console.log("this.sumPSIns4", this.sumPSIns4);
+          }
+        }
+      }
+
           // this.stationData = Array(this.station.length).fill(0);
           // console.log(this.stationData);
         }
@@ -1026,22 +1224,22 @@ export default {
           {
             label: "PS",
             backgroundColor: "#FF0000",
-            data: [this.sumScrapIns1, this.sumScrapIns2, this.sumScrapIns3],
+            data: [this.sumPSIns3, this.sumPSIns4],
           },
           {
             label: "RP",
             backgroundColor: "#FF7F00",
-            data: [this.sumrepairIns1, this.sumrepairIns2, this.sumrepairIns3],
+            data: [this.sumRPIns3, this.sumRPIns4],
           },
           {
             label: "RW",
             backgroundColor: "#FFFF00",
-            data: [this.sumScrapIns1, this.sumScrapIns2, this.sumScrapIns3],
+            data: [this.sumRWIns3, this.sumRWIns4],
           },
           {
             label: "RT",
             backgroundColor: "#FF69B4",
-            data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
+            data: [this.sumRTIns3, this.sumRTIns4],
           },
         ],
       };

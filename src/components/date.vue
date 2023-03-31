@@ -444,23 +444,23 @@ export default {
 
     RTDefects: [],
     sumRTDefects: null,
-    sumRTIns1: null,
-    sumRTIns2: null,
+    sumRTIns3: null,
+    sumRTIns4: null,
 
     RPDefects: [],
     sumRPDefects: null,
-    sumRPIns1: null,
-    sumRPIns2: null,
+    sumRPIns3: null,
+    sumRPIns4: null,
 
     RWDefects: [],
     sumRWDefects: null,
-    sumRWIns1: null,
-    sumRWIns2: null,
+    sumRWIns3: null,
+    sumRWIns4: null,
 
     PSDefects: [],
     sumPSDefects: null,
-    sumPSIns1: null,
-    sumPSIns2: null,
+    sumPSIns3: null,
+    sumPSIns4: null,
 
     loaded: false,
     OEEOld: 101,
@@ -1284,17 +1284,17 @@ export default {
           {
             label: "PS",
             backgroundColor: "#FF0000",
-            data: [this.sumPSIns3, this.sumPSIns3],
+            data: [this.sumPSIns3, this.sumPSIns4],
           },
           {
             label: "RP",
             backgroundColor: "#FF7F00",
-            data: [this.sumRPIns3, this.sumRPIns3],
+            data: [this.sumRPIns3, this.sumRPIns4],
           },
           {
             label: "RW",
             backgroundColor: "#FFFF00",
-            data: [this.sumRWIns3, this.sumRWIns3],
+            data: [this.sumRWIns3, this.sumRWIns4],
           },
           {
             label: "RT",
