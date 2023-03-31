@@ -18,7 +18,7 @@
         </ul>
       </div>
       <div class="WT-item">
-        <table>
+        <table fixed-header>
           <tr>
             <th>
               <h3> WORKING</h3>
@@ -76,10 +76,8 @@
             :color="this.OEE < 75 ? '#F9370C' : '#4CAF50'">
             <strong>{{ OEE }}%</strong>
           </v-progress-circular>
-
         </div>
       </div>
-
       <ul class="content-APQ-item">
         <br>
         <div>
@@ -87,10 +85,7 @@
             <v-dialog v-model="dialog1" width="auto">
               <template v-slot:activator="{ props }">
                 <v-btn v-bind="props">
-
                   <h2>Availability : </h2>
-
-
                 </v-btn>
               </template>
               <v-card width="800px" height="800px">
@@ -131,7 +126,6 @@
                   <v-btn color="primary" block @click="dialog1 = false">Close</v-btn>
                 </v-card-actions>
               </v-card>
-
             </v-dialog>
             <v-progress-linear v-model="availability" height="55" :color="this.availability < 85 ? '#F9370C' : '#4CAF50'">
               <strong>{{ availability }}%</strong>
