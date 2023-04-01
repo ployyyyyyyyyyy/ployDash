@@ -195,7 +195,7 @@
             <v-card width="800px" height="800px">
               <v-card-text>
                 <div class="content-failureDefect-item">
-                  <v-table fixed-header height="630px" class="pa-10 ">
+                  <v-table fixed-header height="630px" class="pa-10 "  v-if="type == '1' || type == '2'">
                     <thead>
                       <tr>
                         <th>
@@ -216,6 +216,33 @@
                       <tr v-for="(failureDefect, index) in failureDefect " :key="index">
                         <td>{{ failureDefect.type }}</td>
                         <td>{{ failureDefect.details }}</td>
+                        <td>{{ failureDefect.station }}</td>
+                        <td>{{ failureDefect.sum }}</td>
+                      </tr>
+                    </tbody>
+                  </v-table>
+
+                  <v-table fixed-header height="630px" class="pa-10 "  v-if="type == '3'">
+                    <thead>
+                      <tr>
+                        <th>
+                          <h3>Type</h3>
+                        </th>
+                        <th>
+                          <h3>Failure Details</h3>
+                        </th>
+                        <th>
+                          <h3>Operation</h3>
+                        </th>
+                        <th>
+                          <h3>Sum</h3>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(failureDefect, index) in failureDefect " :key="index">
+                        <td>{{ failureDefect.type }}</td>
+                        <td>{{ failureDefect.extendedDetails }}</td>
                         <td>{{ failureDefect.station }}</td>
                         <td>{{ failureDefect.sum }}</td>
                       </tr>
@@ -527,7 +554,7 @@ export default {
         //ตารางPerformance P----------------------------------------------------
         this.downtimenotBT = this.downtimeDefect
       }
-      
+
       // DOWNTIME----------------------------------------------------------
       const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
       if (parseInt(this.type) == 3) {
@@ -913,6 +940,8 @@ export default {
           this.downtimenotBT = this.downtimeDefect
         }
       console.log(this.bottleneck)
+
+      
         // DOWNTIME----------------------------------------------------------
         const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
         if (parseInt(this.type) == 3) {
