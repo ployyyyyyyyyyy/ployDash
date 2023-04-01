@@ -555,6 +555,9 @@ export default {
           this.stationForChart = s.filter(
             (item) => !item.stationName.includes("Inspection")
           );
+          this.station = s.filter(
+            (item) => !item.stationName.includes("Inspection")
+          );
         }
         if (
           parseInt(this.type) == 1 ||
@@ -562,8 +565,7 @@ export default {
         ) {
           this.stationForChart = s;
         }
-      this.station = s;
-      
+        this.station = s;
       console.log(this.station);
       //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
       this.stationData = Array(this.station.length).fill(0);
@@ -891,33 +893,40 @@ export default {
           this.downtimenotBT = this.downtimeDefect
         }
         
-        // DOWNTIME----------------------------------------------------------
-        const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
-        if (parseInt(this.type) == 3) {
-          this.stationForChart = s.filter(
+      // DOWNTIME----------------------------------------------------------
+      const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
+      if (parseInt(this.type) == 3) {
+        this.stationForChart = s.filter(
+          (item) => !item.stationName.includes("Inspection")
+        );
+        this.station = s.filter(
             (item) => !item.stationName.includes("Inspection")
           );
-        }
-        if (
-          parseInt(this.type) == 1 ||
-          parseInt(this.type) == 2
-        ) {
-          this.stationForChart = s;
-        }
+      }
+      if (
+        parseInt(this.type) == 1 ||
+        parseInt(this.type) == 2
+      ) {
+        this.stationForChart = s;
         this.station = s;
-        console.log("this.station", this.station);
-        this.stationData = Array(this.station.length).fill(0);
-        console.log(this.stationData);
-        for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
-          console.log(dashboard.downtimeDefect[i]);
-          for (let j = 0; j < this.station.length; j++) {
-            if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
-              this.stationData[j] =
-                this.stationData[j] + dashboard.downtimeDefect[i].downtime;
-              console.log(this.stationData);
-            }
+
+      }
+
+      console.log(this.station);
+      //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
+      this.stationData = Array(this.station.length).fill(0);
+      console.log(this.stationData);
+
+      for (let i = 0; i < dashboard.downtimeDefect.length; i++) {
+        console.log(dashboard.downtimeDefect[i]);
+        for (let j = 0; j < this.station.length; j++) {
+          if (this.station[j].stationId == dashboard.downtimeDefect[i].station) {
+            this.stationData[j] =
+              this.stationData[j] + dashboard.downtimeDefect[i].downtime;
+            console.log(this.stationData);
           }
         }
+      }
         this.setChart()
         if (this.OEEOld !== this.OEE && this.availabilityOld !== this.availability && this.performanceOld !== this.performance && this.qualityOld !== this.quality) {
           this.OEEOld == this.OEE
@@ -1249,7 +1258,7 @@ export default {
           },
           {
             label: "RW",
-            backgroundColor: "#FFFF00",
+            backgroundColor: "#FFDF00",
             data: [this.sumRWIns3, this.sumRWIns4],
           },
           {
