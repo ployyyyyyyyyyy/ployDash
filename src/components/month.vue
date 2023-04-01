@@ -553,8 +553,8 @@ export default {
           parseInt(this.type) == 2
         ) {
           this.stationForChart = s;
-          this.station = s;
         }
+      this.station = s;
       console.log(this.station);
       //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
       this.stationData = Array(this.station.length).fill(0);

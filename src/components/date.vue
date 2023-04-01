@@ -1322,7 +1322,7 @@ export default {
           },
           {
             label: "RW",
-            backgroundColor: "#FFFF00",
+            backgroundColor: "#FFDF00",
             data: [this.sumRWIns3, this.sumRWIns4],
           },
           {
