@@ -551,6 +551,7 @@ export default {
 
       // DOWNTIME----------------------------------------------------------
       const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
+      console.log(s);
         if (parseInt(this.type) == 3) {
           this.stationForChart = s.filter(
             (item) => !item.stationName.includes("Inspection")
@@ -564,9 +565,9 @@ export default {
           parseInt(this.type) == 2
         ) {
           this.stationForChart = s;
+          this.station = s;
         }
-        this.station = s;
-      console.log(this.station);
+      // console.log(this.station);
       //เปลี่ยนข้อมูลจาก [] --> [0,0,0,0] ตามจำนวน station
       this.stationData = Array(this.station.length).fill(0);
       console.log(this.stationData);
@@ -582,7 +583,7 @@ export default {
         }
       }
       //defect graph----------------------------------------------------
-      this.stationIns = this.station.filter((e) => {
+      this.stationIns = s.filter((e) => {
         const re = new RegExp("inspection", "i");
         return re.test(e.stationName);
       });
