@@ -312,7 +312,7 @@
           </div>
           <div class="scale">min</div>
           <Bar :data="chartData1F" width="350" height="200" class="text-h6 pa-4 " />
-          <div class="scale2">station</div>
+          <div class="scale2">operation</div>
         </div>
         <div class="content-SG-item">
           <div>
@@ -320,7 +320,7 @@
           </div>
           <div class="scale">Frame</div>
           <Bar :data="chartData2" :options="options" width="350" height="200" class="pa-4 " />
-          <div class="scale2">station</div>
+          <div class="scale2">operation</div>
         </div>
       </div>
 
@@ -331,7 +331,7 @@
           </div>
           <div class="scale">min</div>
           <Bar :data="chartData1S" width="350" height="200" class="pa-4 " />
-          <div class="scale2">station</div>
+          <div class="scale2">operation</div>
         </div>
         <div class="content-SG-item">
           <div>
@@ -339,7 +339,7 @@
           </div>
           <div class="scale">Frame</div>
           <Bar :data="chartData3" :options="options2" width="350" height="200" class="pa-4 " />
-          <div class="scale2">station</div>
+          <div class="scale2">operation</div>
         </div>
       </div>
 
@@ -350,7 +350,7 @@
           </div>
           <div class="scale">min</div>
           <Bar :data="chartData1P" width="350" height="200" class="pa-4 " />
-          <div class="scale2">station</div>
+          <div class="scale2">operation</div>
         </div>
         <div class="content-SG-item">
           <div>
@@ -358,7 +358,7 @@
           </div>
           <div class="scale">Frame</div>
           <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
-          <div class="scale2">station</div>
+          <div class="scale2">operation</div>
         </div>
       </div>
 
@@ -1351,7 +1351,7 @@ header {
   text-align: center;
   background: #FF971E;
   margin: 0 auto;
-  margin-top: 10px;
+  margin-top: 5px;
   transform: translatex(720px);
   font-family: 'Sarabun', sans-serif;
   font-size: 20px;
@@ -1427,7 +1427,7 @@ ul.BACK li a h2:hover {
   height: 215px;
   border-radius: 15px;
   justify-items: center;
-  margin-top: 127%;
+  margin-top: 126%;
   transform: translatex(589%);
   font-family: 'Sarabun', sans-serif;
   font-size: 20;
@@ -1510,7 +1510,7 @@ ul.Logout li a h2:hover {
   width: 500px;
   height: 400px;
   margin-left: 350px;
-  margin-top: -49%;
+  margin-top: -49.5%;
 }
 
 .content-OEE-item h2 {
