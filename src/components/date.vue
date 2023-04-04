@@ -534,7 +534,7 @@ export default {
         );
         //ตารางPerformance F----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
         //ตารางAvailability S--------------------------------------------------
@@ -544,7 +544,7 @@ export default {
         );
         //ตารางPerformance S----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
 
@@ -561,9 +561,6 @@ export default {
         this.stationForChart = s.filter(
           (item) => !item.stationName.includes("Inspection")
         );
-        this.station = s.filter(
-            (item) => !item.stationName.includes("Inspection")
-          );
       }
       if (
         parseInt(this.type) == 1 ||
@@ -922,7 +919,7 @@ export default {
         );
         //ตารางPerformance F----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
         //ตารางAvailability S--------------------------------------------------
@@ -932,7 +929,7 @@ export default {
         );
         //ตารางPerformance S----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
 

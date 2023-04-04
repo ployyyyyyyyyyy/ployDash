@@ -229,7 +229,7 @@
                     </tbody>
                   </v-table>
 
-                  <v-table fixed-header height="630px" class="pa-10 "  v-if="type == '3'">
+                  <v-table fixed-header height="630px" class="pa-10"  v-if="type == '3'">
                     <thead>
                       <tr>
                         <th>
@@ -528,7 +528,7 @@ export default {
         );
         //ตารางPerformance F----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
         //ตารางAvailability S--------------------------------------------------
@@ -538,7 +538,7 @@ export default {
         );
         //ตารางPerformance S----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
 
@@ -873,7 +873,7 @@ export default {
         );
         //ตารางPerformance F----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
         //ตารางAvailability S--------------------------------------------------
@@ -883,7 +883,7 @@ export default {
         );
         //ตารางPerformance S----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
 

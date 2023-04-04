@@ -517,7 +517,7 @@ export default {
         );
         //ตารางPerformance F----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPF06"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
         //ตารางAvailability S--------------------------------------------------
@@ -527,7 +527,7 @@ export default {
         );
         //ตารางPerformance S----------------------------------------------------
         this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => downtimenotBT.station !== "OPS04"
+          (downtimenotBT) => this.downtimeDefect
         );
       }
 
