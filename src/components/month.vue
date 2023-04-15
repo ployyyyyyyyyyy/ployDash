@@ -28,7 +28,7 @@
             </th>
           </tr>
           <tr>
-            <td><b>TIME</b></td>
+            <td><b>SHIFT</b></td>
             <td><b>MIN</b></td>
           </tr>
           <tr>
@@ -270,20 +270,21 @@
       </ul>
 
       <div class="content-COUNT-item">
-        <br>
         <h2>TARGET</h2>
         <a>
           <h3> {{ target }} </h3>
         </a>
-        <br>
         <h2>PLAN</h2>
         <a>
           <h3> {{ plan }}</h3>
         </a>
-        <br>
         <h2>ACTUAL</h2>
         <a>
           <h3> {{ actual }} </h3>
+        </a>
+        <h2>DIFF</h2>
+        <a>
+          <h3 :style="{ color: result < 0 ? '#F9370C' : '#000000' }"> {{ result }} </h3>
         </a>
       </div>
       <div class="content-BT-item" v-if="type == '1' || type == '2'">
@@ -346,7 +347,7 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData4" :options="options3" width="350" height="200" class="pa-4 " />
           <div class="scale2">operation</div>
 
         </div>
@@ -402,6 +403,7 @@ export default {
     target: 0,
     plan: 0,
     actual: 0,
+    result:0,
     time: '-',
     min: '-',
     dialog1: false,
@@ -470,11 +472,40 @@ export default {
     performanceOld: 101,
     qualityOld: 101,
     options: {
-        barThickness: 30,
-      },
+      barThickness: 30,
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
+    },
     options2: {
       barThickness: 40,
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
       }
+    },
+    options3: {
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
+    },
   }),
   async mounted() {
     console.log(this.type);
@@ -510,7 +541,6 @@ export default {
       this.station = dashboard.failureDefect.station;
       this.sum = dashboard.failureDefect.sum;
        //ตารางAvailability F--------------------------------------------------
-        
        if (parseInt(this.type) == 1) { 
         this.bottleneck = dashboard.downtimeDefect.filter(
           (bottleneck) => bottleneck.station === "OPF06"
@@ -774,6 +804,7 @@ export default {
       this.target = 0;
       this.plan = 0;
       this.actual = 0;
+      this.result = 0;
       this.OEE = 0;
       this.availability = 0;
       this.performance = 0;
@@ -1136,6 +1167,9 @@ export default {
 
   },
   computed: {
+    result() {
+      return this.actual - this.plan;
+},
     type() {
       return this.$route.params.type;
     },
@@ -1539,7 +1573,6 @@ ul.content-APQ-item li a :hover {
 
 .content-COUNT-item a h3 {
   background: white;
-  color: black;
   width: 193px;
   height: 55px;
   justify-items: center;

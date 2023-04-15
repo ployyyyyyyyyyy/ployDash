@@ -28,11 +28,11 @@
             </th>
           </tr>
           <tr>
-            <td><b>TIME</b></td>
+            <td><b>SHIFT</b></td>
             <td><b>MIN</b></td>
           </tr>
           <tr>
-            <td><b> {{ time }} </b></td>
+            <td><b> {{ showShift }} </b></td>
             <td><b> {{ min }} </b></td>
           </tr>
         </table>
@@ -195,7 +195,7 @@
             <v-card width="800px" height="800px">
               <v-card-text>
                 <div class="content-failureDefect-item">
-                  <v-table fixed-header height="630px" class="pa-10 "  v-if="type == '1' || type == '2'">
+                  <v-table fixed-header height="630px" class="pa-10 " v-if="type == '1' || type == '2'">
                     <thead>
                       <tr>
                         <th>
@@ -222,7 +222,7 @@
                     </tbody>
                   </v-table>
 
-                  <v-table fixed-header height="630px" class="pa-10 "  v-if="type == '3'">
+                  <v-table fixed-header height="630px" class="pa-10 " v-if="type == '3'">
                     <thead>
                       <tr>
                         <th>
@@ -264,20 +264,21 @@
       </ul>
 
       <div class="content-COUNT-item">
-        <br>
         <h2>TARGET</h2>
         <a>
           <h3> {{ target }} </h3>
         </a>
-        <br>
         <h2>PLAN</h2>
         <a>
           <h3> {{ plan }}</h3>
         </a>
-        <br>
         <h2>ACTUAL</h2>
         <a>
           <h3> {{ actual }} </h3>
+        </a>
+        <h2>DIFF</h2>
+        <a>
+          <h3 :style="{ color: result < 0 ? '#F9370C' : '#000000' }"> {{ result }} </h3>
         </a>
       </div>
       <div class="content-BT-item" v-if="type == '1' || type == '2'">
@@ -357,11 +358,10 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData4" :options="options3" width="350" height="200" class="pa-4 " />
           <div class="scale2">operation</div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -490,11 +490,39 @@ export default {
     qualityOld: 101,
     options: {
       barThickness: 30,
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
     },
     options2: {
       barThickness: 40,
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
+    },
+    options3: {
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
     }
-
   }),
   async mounted() {
     console.log(this.type)
@@ -526,9 +554,24 @@ export default {
       this.type = dashboard.failureDefect.type;
       this.details = dashboard.failureDefect.details;
       this.sum = dashboard.failureDefect.sum;
-       //ตารางAvailability F--------------------------------------------------
-        
-       if (parseInt(this.type) == 1) { 
+
+      switch (this.time) {
+          case "NO OT DAY":
+            this.showShift = "DAY";
+            break;
+          case "NO OT NIGHT": //ตัวอย่าง
+            this.showShift = "NIGHT";
+            break;
+          case "OT DAY": //ตัวอย่าง
+            this.showShift = "DAY(OT)";
+            break;
+          case "OT NIGHT": //ตัวอย่าง
+            this.showShift = "NIGHT(OT)";
+            break;
+        }
+      //ตารางAvailability F--------------------------------------------------
+
+      if (parseInt(this.type) == 1) {
         this.bottleneck = dashboard.downtimeDefect.filter(
           (bottleneck) => bottleneck.station === "OPF06"
         );
@@ -537,9 +580,9 @@ export default {
           (downtimenotBT) => this.downtimeDefect
         );
       }
-        //ตารางAvailability S--------------------------------------------------
-        if (parseInt(this.type) == 2) {
-          this.bottleneck = dashboard.downtimeDefect.filter(
+      //ตารางAvailability S--------------------------------------------------
+      if (parseInt(this.type) == 2) {
+        this.bottleneck = dashboard.downtimeDefect.filter(
           (bottleneck) => bottleneck.station === "OPS04"
         );
         //ตารางPerformance S----------------------------------------------------
@@ -789,6 +832,7 @@ export default {
       this.AA()
       console.error(e);
     }
+    // this.renderChart(this.chartData2, this.chartOptions)
 
     console.log("dashboard", dashboard);
     console.log("actual", dashboard.actual);
@@ -911,27 +955,42 @@ export default {
         this.details = dashboard.failureDefect.details;
         this.station = dashboard.failureDefect.station;
         this.sum = dashboard.failureDefect.sum;
-       //ตารางAvailability F--------------------------------------------------
-        
-       if (parseInt(this.type) == 1) { 
-        this.bottleneck = dashboard.downtimeDefect.filter(
-          (bottleneck) => bottleneck.station === "OPF06"
-        );
-        //ตารางPerformance F----------------------------------------------------
-        this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => this.downtimeDefect
-        );
-      }
+
+        switch (this.time) {
+          case "NO OT DAY":
+            this.showShift = "DAY";
+            break;
+          case "NO OT NIGHT": //ตัวอย่าง
+            this.showShift = "NIGHT";
+            break;
+          case "OT DAY": //ตัวอย่าง
+            this.showShift = "DAY(OT)";
+            break;
+          case "OT NIGHT": //ตัวอย่าง
+            this.showShift = "NIGHT(OT)";
+            break;
+        }
+        //ตารางAvailability F--------------------------------------------------
+
+        if (parseInt(this.type) == 1) {
+          this.bottleneck = dashboard.downtimeDefect.filter(
+            (bottleneck) => bottleneck.station === "OPF06"
+          );
+          //ตารางPerformance F----------------------------------------------------
+          this.downtimenotBT = dashboard.downtimeDefect.filter(
+            (downtimenotBT) => this.downtimeDefect
+          );
+        }
         //ตารางAvailability S--------------------------------------------------
         if (parseInt(this.type) == 2) {
           this.bottleneck = dashboard.downtimeDefect.filter(
-          (bottleneck) => bottleneck.station === "OPS04"
-        );
-        //ตารางPerformance S----------------------------------------------------
-        this.downtimenotBT = dashboard.downtimeDefect.filter(
-          (downtimenotBT) => this.downtimeDefect
-        );
-      }
+            (bottleneck) => bottleneck.station === "OPS04"
+          );
+          //ตารางPerformance S----------------------------------------------------
+          this.downtimenotBT = dashboard.downtimeDefect.filter(
+            (downtimenotBT) => this.downtimeDefect
+          );
+        }
 
         //ตารางAvailability P--------------------------------------------------
         if (parseInt(this.type) == 3) {
@@ -939,9 +998,9 @@ export default {
           //ตารางPerformance P----------------------------------------------------
           this.downtimenotBT = this.downtimeDefect
         }
-      console.log(this.bottleneck)
+        console.log(this.bottleneck)
 
-      
+
         // DOWNTIME----------------------------------------------------------
         const s = await axiosInstance.get(`/station/line/${parseInt(this.type)}`);
         if (parseInt(this.type) == 3) {
@@ -1075,85 +1134,85 @@ export default {
             }
           }
 
-      // RT----------------------------------------------------------
-      this.RTDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "RT"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.RTDefects[i] && this.RTDefects[i].sum) {
-          this.sumRTDefects =
-            this.sumRTDefects + this.RTDefects[i].sum;
-          this.countRTDefects = this.countRTDefects + 1;
-          if (this.RTDefects[i].station == "Inspection 3") {
-            this.sumRTIns3 = this.sumRTIns3 + this.RTDefects[i].sum;
-            // console.log("this.sumRTIns3", this.sumRTIns3);
+          // RT----------------------------------------------------------
+          this.RTDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "RT"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.RTDefects[i] && this.RTDefects[i].sum) {
+              this.sumRTDefects =
+                this.sumRTDefects + this.RTDefects[i].sum;
+              this.countRTDefects = this.countRTDefects + 1;
+              if (this.RTDefects[i].station == "Inspection 3") {
+                this.sumRTIns3 = this.sumRTIns3 + this.RTDefects[i].sum;
+                // console.log("this.sumRTIns3", this.sumRTIns3);
+              }
+              if (this.RTDefects[i].station == "Inspection 4") {
+                this.sumRTIns4 = this.sumRTIns4 + this.RTDefects[i].sum;
+                // console.log("this.sumRTIns4", this.sumRTIns4);
+              }
+            }
           }
-          if (this.RTDefects[i].station == "Inspection 4") {
-            this.sumRTIns4 = this.sumRTIns4 + this.RTDefects[i].sum;
-            // console.log("this.sumRTIns4", this.sumRTIns4);
-          }
-        }
-      }
 
-      // RP----------------------------------------------------------
-      this.RPDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "RP"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.RPDefects[i] && this.RPDefects[i].sum) {
-          this.sumRPDefects =
-            this.sumRPDefects + this.RPDefects[i].sum;
-          this.countRPDefects = this.countRPDefects + 1;
-          if (this.RPDefects[i].station == "Inspection 3") {
-            this.sumRPIns3 = this.sumRPIns3 + this.RPDefects[i].sum;
-            // console.log("this.sumRPIns3", this.sumRPIns3);
+          // RP----------------------------------------------------------
+          this.RPDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "RP"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.RPDefects[i] && this.RPDefects[i].sum) {
+              this.sumRPDefects =
+                this.sumRPDefects + this.RPDefects[i].sum;
+              this.countRPDefects = this.countRPDefects + 1;
+              if (this.RPDefects[i].station == "Inspection 3") {
+                this.sumRPIns3 = this.sumRPIns3 + this.RPDefects[i].sum;
+                // console.log("this.sumRPIns3", this.sumRPIns3);
+              }
+              if (this.RPDefects[i].station == "Inspection 4") {
+                this.sumRPIns4 = this.sumRPIns4 + this.RPDefects[i].sum;
+                // console.log("this.sumRPIns4", this.sumRPIns4);
+              }
+            }
           }
-          if (this.RPDefects[i].station == "Inspection 4") {
-            this.sumRPIns4 = this.sumRPIns4 + this.RPDefects[i].sum;
-            // console.log("this.sumRPIns4", this.sumRPIns4);
-          }
-        }
-      }
 
-      // RW----------------------------------------------------------
-      this.RWDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "RW"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.RWDefects[i] && this.RWDefects[i].sum) {
-          this.sumRWDefects =
-            this.sumRWDefects + this.RWDefects[i].sum;
-          this.countRWDefects = this.countRWDefects + 1;
-          if (this.RWDefects[i].station == "Inspection 3") {
-            this.sumRWIns3 = this.sumRWIns3 + this.RWDefects[i].sum;
-            // console.log("this.sumRWIns3", this.sumRWIns3);
+          // RW----------------------------------------------------------
+          this.RWDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "RW"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.RWDefects[i] && this.RWDefects[i].sum) {
+              this.sumRWDefects =
+                this.sumRWDefects + this.RWDefects[i].sum;
+              this.countRWDefects = this.countRWDefects + 1;
+              if (this.RWDefects[i].station == "Inspection 3") {
+                this.sumRWIns3 = this.sumRWIns3 + this.RWDefects[i].sum;
+                // console.log("this.sumRWIns3", this.sumRWIns3);
+              }
+              if (this.RWDefects[i].station == "Inspection 4") {
+                this.sumRWIns4 = this.sumRWIns4 + this.RWDefects[i].sum;
+                // console.log("this.sumRWIns4", this.sumRWIns4);
+              }
+            }
           }
-          if (this.RWDefects[i].station == "Inspection 4") {
-            this.sumRWIns4 = this.sumRWIns4 + this.RWDefects[i].sum;
-            // console.log("this.sumRWIns4", this.sumRWIns4);
-          }
-        }
-      }
 
-      // PS----------------------------------------------------------
-      this.PSDefects = dashboard.failureDefect.filter(
-        (defect) => defect.type === "PS"
-      );
-      for (let i = 0; i < dashboard.failureTotal; i++) {
-        if (this.PSDefects[i] && this.PSDefects[i].sum) {
-          this.sumPSDefects =
-            this.sumPSDefects + this.PSDefects[i].sum;
-          this.countPSDefects = this.countPSDefects + 1;
-          if (this.PSDefects[i].station == "Inspection 3") {
-            this.sumPSIns3 = this.sumPSIns3 + this.PSDefects[i].sum;
-            // console.log("this.sumPSIns3", this.sumPSIns3);
+          // PS----------------------------------------------------------
+          this.PSDefects = dashboard.failureDefect.filter(
+            (defect) => defect.type === "PS"
+          );
+          for (let i = 0; i < dashboard.failureTotal; i++) {
+            if (this.PSDefects[i] && this.PSDefects[i].sum) {
+              this.sumPSDefects =
+                this.sumPSDefects + this.PSDefects[i].sum;
+              this.countPSDefects = this.countPSDefects + 1;
+              if (this.PSDefects[i].station == "Inspection 3") {
+                this.sumPSIns3 = this.sumPSIns3 + this.PSDefects[i].sum;
+                // console.log("this.sumPSIns3", this.sumPSIns3);
+              }
+              if (this.PSDefects[i].station == "Inspection 4") {
+                this.sumPSIns4 = this.sumPSIns4 + this.PSDefects[i].sum;
+                // console.log("this.sumPSIns4", this.sumPSIns4);
+              }
+            }
           }
-          if (this.PSDefects[i].station == "Inspection 4") {
-            this.sumPSIns4 = this.sumPSIns4 + this.PSDefects[i].sum;
-            // console.log("this.sumPSIns4", this.sumPSIns4);
-          }
-        }
-      }
 
         }
         this.loaded = true;
@@ -1193,6 +1252,9 @@ export default {
 
   },
   computed: {
+    result() {
+      return this.actual - this.plan;
+    },
     type() {
       return this.$route.params.type;
     },
@@ -1257,6 +1319,24 @@ export default {
         ],
       };
     },
+    // yAxisScale() {
+    //   let scale = {
+    //     ticks: {
+    //       beginAtZero: true,
+    //       stepSize: 1
+    //     }
+    //   }
+    //   return {
+    //     yAxes: [scale]
+    //   }
+    // },
+    // chartOptions() {
+    //   return {
+    //     responsive: true,
+    //     maintainAspectRatio: false,
+    //     scales: this.yAxisScale
+    //   }
+    // },
     chartData2() {
       return {
         labels: this.stationIns.map(station => station.stationName),
@@ -1277,7 +1357,7 @@ export default {
           //   data: [this.sumreworkIns1, this.sumreworkIns2, this.sumreworkIns3],
           // },
         ],
-      };
+      }
     },
 
     chartData3() {
@@ -1427,7 +1507,7 @@ ul.BACK li a h2:hover {
   height: 215px;
   border-radius: 15px;
   justify-items: center;
-  margin-top: 126%;
+  margin-top: 125%;
   transform: translatex(589%);
   font-family: 'Sarabun', sans-serif;
   font-size: 20;

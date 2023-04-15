@@ -28,7 +28,7 @@
             </th>
           </tr>
           <tr>
-            <td><b>TIME</b></td>
+            <td><b>SHIFT</b></td>
             <td><b>MIN</b></td>
           </tr>
           <tr>
@@ -272,20 +272,21 @@
 
 
       <div class="content-COUNT-item">
-        <br>
         <h2>TARGET</h2>
         <a>
           <h3> {{ target }} </h3>
         </a>
-        <br>
         <h2>PLAN</h2>
         <a>
           <h3> {{ plan }}</h3>
         </a>
-        <br>
         <h2>ACTUAL</h2>
         <a>
           <h3> {{ actual }} </h3>
+        </a>
+        <h2>DIFF</h2>
+        <a>
+          <h3 :style="{ color: result < 0 ? '#F9370C' : '#000000' }">  {{ result }} </h3>
         </a>
       </div>
       <div class="content-BT-item" v-if="type == '1' || type == '2'">
@@ -347,7 +348,7 @@
             <h1>DEFECT TYPE</h1>
           </div>
           <div class="scale">Frame</div>
-          <Bar :data="chartData4" width="350" height="200" class="pa-4 " />
+          <Bar :data="chartData4" :options="options3" width="350" height="200" class="pa-4 " />
           <div class="scale2">operation</div>
 
         </div>
@@ -472,12 +473,40 @@ export default {
     performance: 101,
     quality: 101,
     options: {
-        barThickness: 30,
-      },
+      barThickness: 30,
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
+    },
     options2: {
       barThickness: 40,
-      },
-
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
+    },
+    options3: {
+      scales: {
+        y: {
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            autoSkip: false
+          }
+        }
+      }
+    },
     loaded: false,
   }),
 
@@ -1133,6 +1162,9 @@ export default {
 
   },
   computed: {
+    result() {
+      return this.actual - this.plan;
+},
     type() {
       return this.$route.params.type;
     },
