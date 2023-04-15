@@ -478,7 +478,7 @@ export default {
         y: {
           min: 0,
           ticks: {
-            stepSize: 1,
+            stepSize: 2,
             autoSkip: false
           }
         }
@@ -490,7 +490,7 @@ export default {
         y: {
           min: 0,
           ticks: {
-            stepSize: 1,
+            stepSize: 2,
             autoSkip: false
           }
         }
@@ -501,7 +501,7 @@ export default {
         y: {
           min: 0,
           ticks: {
-            stepSize: 1,
+            stepSize: 2,
             autoSkip: false
           }
         }
